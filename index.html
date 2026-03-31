@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบบันทึกการลา</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Mitr:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f4f8; --surface: #ffffff; --surface2: #f8fafc;
+  --primary: #1e4d8c; --primary-light: #2563b0;
+  --accent: #e85d26; --accent2: #16a34a;
+  --text: #1a2332; --text2: #4a5568; --text3: #8a9bb0;
+  --border: #d1dce8; --shadow: 0 2px 12px rgba(30,77,140,0.08); --radius: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
+
+/* SETUP SCREEN */
+#setup-screen {
+  position: fixed; inset: 0; background: var(--primary);
+  display: flex; align-items: center; justify-content: center; z-index: 9999;
+  flex-direction: column; gap: 24px; padding: 24px;
+}
+.setup-card {
+  background: white; border-radius: 16px; padding: 32px; max-width: 500px; width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+.setup-title { font-family:'Mitr',sans-serif; font-size:22px; color:var(--primary); margin-bottom:8px; }
+.setup-sub { color:var(--text2); font-size:13px; margin-bottom:20px; line-height:1.6; }
+.setup-steps { background:#f0f5ff; border-radius:10px; padding:16px; margin-bottom:20px; font-size:13px; line-height:2; }
+.setup-steps ol { padding-left:18px; }
+.setup-steps li { margin-bottom:4px; }
+.setup-steps code { background:#dbeafe; color:#1e40af; padding:1px 6px; border-radius:4px; font-size:12px; }
+.url-input { width:100%; padding:12px; border:2px solid var(--border); border-radius:8px; font-size:13px; font-family:'Sarabun',sans-serif; margin-bottom:12px; }
+.url-input:focus { outline:none; border-color:var(--primary); }
+.btn { padding:10px 20px; border-radius:8px; border:none; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; font-weight:600; transition:all 0.2s; }
+.btn-primary { background:var(--primary); color:white; width:100%; padding:14px; font-size:15px; }
+.btn-primary:hover { background:var(--primary-light); }
+.btn-sm { padding:6px 12px; font-size:12px; }
+.btn-danger { background:#dc2626; color:white; }
+.btn-outline { background:transparent; border:1.5px solid var(--primary); color:var(--primary); }
+.btn-outline:hover { background:var(--primary); color:white; }
+.btn-success { background:var(--accent2); color:white; }
+
+/* HEADER */
+.header { background:var(--primary); color:white; padding:0 24px; display:flex; align-items:center; justify-content:space-between; height:60px; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+.header-title { font-family:'Mitr',sans-serif; font-size:20px; font-weight:600; }
+.header-sub { font-size:11px; opacity:0.7; margin-top:1px; }
+.conn-badge { font-size:11px; padding:4px 10px; border-radius:20px; font-weight:600; }
+.conn-ok { background:#dcfce7; color:#15803d; }
+.conn-err { background:#fee2e2; color:#dc2626; cursor:pointer; }
+
+/* NAV TABS */
+.nav-tabs { background:var(--surface); border-bottom:2px solid var(--border); display:flex; padding:0 24px; gap:4px; overflow-x:auto; }
+.tab-btn { padding:12px 20px; border:none; background:none; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; font-weight:500; color:var(--text2); border-bottom:3px solid transparent; margin-bottom:-2px; white-space:nowrap; transition:all 0.2s; }
+.tab-btn:hover { color:var(--primary); }
+.tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); font-weight:600; }
+
+/* LAYOUT */
+.container { max-width:1100px; margin:0 auto; padding:24px 16px; }
+
+/* CARD */
+.card { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px; margin-bottom:20px; }
+.card-title { font-family:'Mitr',sans-serif; font-size:16px; font-weight:500; color:var(--primary); margin-bottom:16px; }
+
+/* FORM */
+.form-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-group label { font-size:13px; font-weight:600; color:var(--text2); }
+.form-group select, .form-group input, .form-group textarea { border:1.5px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'Sarabun',sans-serif; font-size:14px; background:var(--surface); color:var(--text); transition:border-color 0.2s; }
+.form-group select:focus, .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--primary); }
+.form-group textarea { resize:vertical; min-height:60px; }
+.form-full { grid-column:1 / -1; }
+.btn-row { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+
+/* TABLE */
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+thead th { background:var(--primary); color:white; padding:10px 12px; text-align:left; font-weight:600; white-space:nowrap; }
+tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
+tbody tr:hover { background:#f0f5ff; }
+tbody td { padding:9px 12px; vertical-align:top; }
+.badge { display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+.badge-sick { background:#fee2e2; color:#dc2626; }
+.badge-leave { background:#dbeafe; color:#1d4ed8; }
+.badge-half { background:#fef9c3; color:#b45309; }
+.badge-late { background:#f3e8ff; color:#7c3aed; }
+.badge-swap { background:#dcfce7; color:#15803d; }
+.badge-work-holiday { background:#fff7ed; color:#c2410c; }
+
+/* EMP CARDS */
+.emp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
+.emp-card { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; border-top:4px solid var(--primary); cursor:pointer; transition:transform 0.2s,box-shadow 0.2s; }
+.emp-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(30,77,140,0.12); }
+.emp-name { font-family:'Mitr',sans-serif; font-size:16px; font-weight:500; }
+.emp-stats { margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.stat-box { background:var(--surface2); border-radius:8px; padding:8px; text-align:center; }
+.stat-num { font-size:22px; font-weight:700; font-family:'Mitr',sans-serif; }
+.stat-label { font-size:11px; color:var(--text3); margin-top:2px; }
+
+/* FILTER BAR */
+.filter-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; align-items:center; }
+.filter-bar select, .filter-bar input { padding:8px 12px; border:1.5px solid var(--border); border-radius:8px; font-family:'Sarabun',sans-serif; font-size:13px; background:var(--surface); }
+
+/* ALERT */
+.alert { padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:16px; }
+.alert-success { background:#dcfce7; color:#15803d; border:1px solid #86efac; }
+.alert-error { background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; }
+.alert-info { background:#dbeafe; color:#1d4ed8; border:1px solid #93c5fd; }
+
+/* HOLIDAY CHIP */
+.holiday-chip { display:inline-flex; align-items:center; gap:6px; background:#fef3c7; color:#92400e; border-radius:20px; padding:5px 12px; font-size:12px; margin:4px; }
+.holiday-chip .del { cursor:pointer; color:#b45309; font-weight:bold; }
+
+/* LOADING */
+.loading { display:inline-block; width:16px; height:16px; border:2px solid #ddd; border-top-color:var(--primary); border-radius:50%; animation:spin 0.6s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.7); display:flex; align-items:center; justify-content:center; z-index:500; flex-direction:column; gap:12px; }
+.loading-text { font-size:14px; color:var(--primary); font-weight:600; }
+
+/* SECTION */
+.section { display:none; }
+.section.active { display:block; }
+
+/* MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal { background:white; border-radius:12px; padding:24px; max-width:480px; width:90%; }
+.modal-title { font-family:'Mitr',sans-serif; font-size:18px; color:var(--primary); margin-bottom:12px; }
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:16px; }
+
+.empty-state { text-align:center; padding:40px; color:var(--text3); }
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-6px); }
+  40%     { transform: translateX(6px); }
+  60%     { transform: translateX(-4px); }
+  80%     { transform: translateX(4px); }
+}
+.shake { animation: shake 0.4s ease; }
+
+@media print {
+  .no-print { display:none !important; }
+  body { background:white; }
+  .card { box-shadow:none; border:1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
+  <div class="setup-card">
+    <div class="setup-title">🔗 เชื่อมต่อ Google Sheet</div>
+    <div class="setup-sub">ระบบนี้เก็บข้อมูลลงใน Google Sheet โดยตรง<br>ต้องตั้งค่าครั้งแรกครั้งเดียว จากนั้นจะจำ URL ไว้ให้อัตโนมัติ</div>
+    
+    <div class="setup-steps">
+      <strong>ขั้นตอนการตั้งค่า:</strong>
+      <ol>
+        <li>เปิด <strong>Google Sheet</strong> ใหม่หรืออันที่มีอยู่</li>
+        <li>คลิก <code>Extensions</code> → <code>Apps Script</code></li>
+        <li>วางโค้ดจากไฟล์ <code>Code.gs</code> ที่ได้รับ</li>
+        <li>รันฟังก์ชัน <code>setup()</code> ครั้งแรก (กด ▶)</li>
+        <li>คลิก <code>Deploy</code> → <code>New deployment</code></li>
+        <li>เลือก <code>Web app</code>, ตั้ง <em>Who has access</em> เป็น <strong>Anyone</strong></li>
+        <li>คลิก <code>Deploy</code> แล้วคัดลอก <strong>Web app URL</strong></li>
+        <li>วาง URL ด้านล่าง แล้วกดเชื่อมต่อ</li>
+      </ol>
+    </div>
+    
+    <input class="url-input" id="setup-url" type="url" placeholder="https://script.google.com/macros/s/...../exec" value="">
+    <button class="btn btn-primary" onclick="connectSheet()">🔗 เชื่อมต่อและเริ่มใช้งาน</button>
+    <div id="setup-error" style="margin-top:12px;font-size:13px;color:#dc2626;display:none"></div>
+  </div>
+</div>
+
+<!-- MAIN APP (hidden until connected) -->
+<div id="main-app" style="display:none">
+
+<div class="header no-print">
+  <div>
+    <div class="header-title">📋 ระบบบันทึกการลาพนักงาน</div>
+    <div class="header-sub">เชื่อมต่อกับ Google Sheet</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div id="conn-status" class="conn-badge conn-ok">● เชื่อมต่อแล้ว</div>
+    <div style="font-size:11px;opacity:0.7" id="current-date"></div>
+    <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:white;font-size:11px" onclick="changeUrl()">⚙️ เปลี่ยน URL</button>
+  </div>
+</div>
+
+<div class="nav-tabs no-print">
+  <button class="tab-btn active" onclick="showSection('dashboard',this)">🏠 หน้าหลัก</button>
+  <button class="tab-btn" onclick="showSection('record',this)">➕ บันทึกการลา</button>
+  <button class="tab-btn" onclick="showSection('history',this)">📅 ประวัติการลา</button>
+  <button class="tab-btn" onclick="showSection('summary',this)">📊 สรุปรายคน</button>
+  <button class="tab-btn" onclick="showSection('holidays',this)">🎌 วันหยุดนักขัตฤกษ์</button>
+</div>
+
+<!-- ALERT -->
+<div class="container" style="padding-bottom:0"><div id="alert-area"></div></div>
+
+<!-- DASHBOARD -->
+<div class="section active" id="section-dashboard">
+<div class="container">
+  <div class="emp-grid" id="emp-grid"></div>
+</div>
+</div>
+
+<!-- RECORD -->
+<div class="section" id="section-record">
+<div class="container">
+  <div class="card">
+    <div class="card-title">➕ บันทึกรายการใหม่</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>พนักงาน *</label>
+        <select id="f-emp"></select>
+      </div>
+      <div class="form-group">
+        <label>ประเภท *</label>
+        <select id="f-type" onchange="onTypeChange()">
+          <option value="">-- เลือกประเภท --</option>
+          <option value="sick">ลาป่วย</option>
+          <option value="leave">ลากิจ</option>
+          <option value="half-am">ลาครึ่งวันเช้า</option>
+          <option value="half-pm">ลาครึ่งวันบ่าย</option>
+          <option value="late">เข้างานสาย (1-2 ชม.)</option>
+          <option value="work-holiday">ทำงานวันหยุด/อาทิตย์</option>
+          <option value="swap">ใช้สิทธิ์แลกวันหยุด</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>วันที่ *</label>
+        <input type="date" id="f-date">
+      </div>
+      <div class="form-group" id="f-enddate-group" style="display:none">
+        <label>ถึงวันที่</label>
+        <input type="date" id="f-enddate">
+      </div>
+      <div class="form-group" id="f-ref-group" style="display:none">
+        <label>อ้างอิงวันที่ทำงาน (แลกจาก)</label>
+        <input type="date" id="f-ref-date">
+      </div>
+      <div class="form-group form-full" id="f-reason-group">
+        <label id="f-reason-label" style="display:flex;align-items:center;gap:6px;">
+          <span id="f-reason-icon">📝</span>
+          <span id="f-reason-title">เหตุผล / รายละเอียด</span>
+          <span id="f-reason-required" style="color:white;font-size:10px;background:#dc2626;padding:2px 7px;border-radius:20px;display:none;font-weight:700;">จำเป็น</span>
+        </label>
+        <textarea id="f-note" rows="3"
+          placeholder="ระบุเหตุผลหรือรายละเอียดเพิ่มเติม..."
+          style="border-left:3px solid var(--primary);padding-left:10px;transition:all 0.2s"
+          oninput="clearReasonError()"></textarea>
+        <div id="f-reason-hint" style="font-size:11px;color:#8a9bb0;margin-top:3px"></div>
+        <div id="f-reason-error" style="display:none;font-size:12px;color:#dc2626;margin-top:4px;font-weight:600;">⚠️ กรุณาระบุเหตุผลก่อนบันทึก</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveRecord()">💾 บันทึกลง Google Sheet</button>
+      <button class="btn btn-outline" onclick="clearForm()">🔄 ล้างฟอร์ม</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- HISTORY -->
+<div class="section" id="section-history">
+<div class="container">
+  <div class="card no-print">
+    <div class="filter-bar">
+      <select id="h-emp-filter" onchange="renderHistory()">
+        <option value="">👤 พนักงานทั้งหมด</option>
+      </select>
+      <select id="h-type-filter" onchange="renderHistory()">
+        <option value="">📋 ประเภททั้งหมด</option>
+        <option value="sick">ลาป่วย</option>
+        <option value="leave">ลากิจ</option>
+        <option value="half-am">ลาครึ่งวันเช้า</option>
+        <option value="half-pm">ลาครึ่งวันบ่าย</option>
+        <option value="late">เข้างานสาย</option>
+        <option value="work-holiday">ทำงานวันหยุด</option>
+        <option value="swap">ใช้สิทธิ์แลก</option>
+      </select>
+      <select id="h-year-filter" onchange="renderHistory()"></select>
+      <input type="text" id="h-search" placeholder="🔍 ค้นหา..." oninput="renderHistory()" style="min-width:160px">
+      <button class="btn btn-outline btn-sm" onclick="loadAllRecords()">🔄 รีเฟรช</button>
+    </div>
+    <div id="history-table-wrap"></div>
+  </div>
+</div>
+</div>
+
+<!-- SUMMARY -->
+<div class="section" id="section-summary">
+<div class="container">
+  <div class="card no-print">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+      <label style="font-weight:600;">ปี :</label>
+      <select id="sum-year" onchange="renderSummary()"></select>
+      <button class="btn btn-outline btn-sm" onclick="printAllPDF()">🖨️ พิมพ์ทั้งหมด</button>
+    </div>
+    <div id="summary-content"></div>
+  </div>
+</div>
+</div>
+
+<!-- HOLIDAYS -->
+<div class="section" id="section-holidays">
+<div class="container">
+  <div class="card">
+    <div class="card-title">🎌 จัดการวันหยุดนักขัตฤกษ์</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>ปี</label>
+        <select id="hol-year" onchange="renderHolidayList()"></select>
+      </div>
+      <div class="form-group">
+        <label>วันที่</label>
+        <input type="date" id="hol-date">
+      </div>
+      <div class="form-group">
+        <label>ชื่อวันหยุด</label>
+        <input type="text" id="hol-name" placeholder="เช่น วันสงกรานต์">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="addHoliday()">➕ เพิ่มวันหยุด</button>
+      <button class="btn btn-outline" onclick="loadDefaultHolidays()">📅 โหลดวันหยุด 2568 (16 วัน)</button>
+    </div>
+    <div style="margin-top:20px">
+      <div class="card-title">รายการ <span id="hol-year-display"></span> (<span id="hol-count">0</span>/16 วัน)</div>
+      <div id="holiday-list" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+</div><!-- /main-app -->
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading-overlay" style="display:none">
+  <div class="loading"></div>
+  <div class="loading-text" id="loading-text">กำลังโหลด...</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-title" id="modal-title"></div>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn btn-danger" id="modal-confirm">ยืนยัน</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//  CONFIG
+// ============================================================
+const EMPLOYEES = [
+  { id: 1, name: 'จักร์กริช', nick: 'กริช', color: '#1e4d8c' },
+  { id: 2, name: 'ณัฐกานต์',  nick: 'อิง',  color: '#7c3aed' },
+  { id: 3, name: 'คนที่สาม',  nick: 'เติ้ล', color: '#c2410c' },
+  { id: 4, name: 'สุชาติ',    nick: 'นิว',  color: '#15803d' },
+];
+const TYPE_LABELS = {
+  sick:'ลาป่วย', leave:'ลากิจ', 'half-am':'ลาครึ่งวันเช้า',
+  'half-pm':'ลาครึ่งวันบ่าย', late:'เข้างานสาย',
+  'work-holiday':'ทำงานวันหยุด', swap:'ใช้สิทธิ์แลกวันหยุด'
+};
+const TYPE_BADGE = {
+  sick:'badge-sick', leave:'badge-leave', 'half-am':'badge-half',
+  'half-pm':'badge-half', late:'badge-late',
+  'work-holiday':'badge-work-holiday', swap:'badge-swap'
+};
+
+let SCRIPT_URL = '';
+let allRecords = [];
+let allHolidays = {};
+
+// ============================================================
+//  INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('leave_script_url');
+  if (saved) {
+    SCRIPT_URL = saved;
+    document.getElementById('setup-url').value = saved;
+    startApp();
+  }
+
+  const today = new Date();
+  document.getElementById('current-date').textContent = formatDateTH(today);
+  document.getElementById('f-date').value = toInputDate(today);
+
+  // Populate selects
+  EMPLOYEES.forEach(e => {
+    ['f-emp','h-emp-filter'].forEach(id => {
+      const sel = document.getElementById(id);
+      const opt = document.createElement('option');
+      opt.value = e.id; opt.textContent = `${e.name} (${e.nick})`;
+      sel.appendChild(opt);
+    });
+  });
+
+  const curTH = today.getFullYear() + 543;
+  const years = [];
+  for (let y = curTH - 2; y <= curTH + 2; y++) years.push(y);
+  ['sum-year','hol-year','h-year-filter'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (id === 'h-year-filter') {
+      const def = document.createElement('option'); def.value = ''; def.textContent = '📆 ทุกปี';
+      sel.appendChild(def);
+    }
+    years.forEach(y => {
+      const opt = document.createElement('option');
+      opt.value = y; opt.textContent = `ปี ${y}`;
+      sel.appendChild(opt);
+    });
+    sel.value = curTH;
+  });
+  document.getElementById('hol-year-display').textContent = `ปี ${curTH}`;
+});
+
+// ============================================================
+//  API
+// ============================================================
+async function api(params) {
+  const url = SCRIPT_URL + '?' + new URLSearchParams(params).toString();
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  return await res.json();
+}
+
+async function connectSheet() {
+  const url = document.getElementById('setup-url').value.trim();
+  if (!url || !url.includes('script.google.com')) {
+    showSetupError('กรุณาวาง URL ของ Google Apps Script Web App ให้ถูกต้อง');
+    return;
+  }
+  showLoading('กำลังทดสอบการเชื่อมต่อ...');
+  try {
+    SCRIPT_URL = url;
+    const res = await api({ action: 'ping' });
+    if (res.ok) {
+      localStorage.setItem('leave_script_url', url);
+      hideLoading();
+      startApp();
+    } else {
+      throw new Error(res.msg || 'ไม่สามารถเชื่อมต่อได้');
+    }
+  } catch (e) {
+    hideLoading();
+    SCRIPT_URL = '';
+    showSetupError('เชื่อมต่อไม่ได้: ' + e.message + ' — ตรวจสอบว่า Deploy แล้วและตั้ง Access เป็น Anyone');
+  }
+}
+
+function showSetupError(msg) {
+  const el = document.getElementById('setup-error');
+  el.style.display = 'block'; el.textContent = '❌ ' + msg;
+}
+
+function changeUrl() {
+  localStorage.removeItem('leave_script_url');
+  location.reload();
+}
+
+async function startApp() {
+  document.getElementById('setup-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  showLoading('กำลังโหลดข้อมูล...');
+  try {
+    await loadAllRecords();
+    await loadAllHolidays();
+    renderDashboard();
+    hideLoading();
+  } catch(e) {
+    hideLoading();
+    showAlert('⚠️ โหลดข้อมูลไม่ได้: ' + e.message, 'error');
+    document.getElementById('conn-status').className = 'conn-badge conn-err';
+    document.getElementById('conn-status').textContent = '● ขาดการเชื่อมต่อ';
+  }
+}
+
+async function loadAllRecords() {
+  const res = await api({ action: 'getRecords' });
+  if (res.ok) allRecords = res.records || [];
+  else throw new Error(res.msg);
+}
+
+async function loadAllHolidays() {
+  const res = await api({ action: 'getHolidays' });
+  if (res.ok) allHolidays = res.holidays || {};
+}
+
+// ============================================================
+//  HELPERS
+// ============================================================
+function toInputDate(d) { return d.toISOString().split('T')[0]; }
+function formatDateTH(d) {
+  if (typeof d === 'string') d = new Date(d + 'T00:00:00');
+  const m = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return `${d.getDate()} ${m[d.getMonth()]} ${d.getFullYear()+543}`;
+}
+function getEmployee(id) { return EMPLOYEES.find(e => String(e.id) === String(id)); }
+function getYearTH(dateStr) {
+  if (!dateStr) return '';
+  try { return String(new Date(String(dateStr).substring(0,10) + 'T00:00:00').getFullYear() + 543); }
+  catch(e) { return ''; }
+}
+function showAlert(msg, type='success') {
+  const a = document.getElementById('alert-area');
+  a.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  setTimeout(() => a.innerHTML = '', 4000);
+}
+function showLoading(txt='กำลังโหลด...') {
+  document.getElementById('loading-text').textContent = txt;
+  document.getElementById('loading-overlay').style.display = 'flex';
+}
+function hideLoading() { document.getElementById('loading-overlay').style.display = 'none'; }
+
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'history') renderHistory();
+  if (name === 'summary') renderSummary();
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'holidays') renderHolidayList();
+}
+
+// ============================================================
+//  DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const curYear = String(new Date().getFullYear() + 543);
+  const grid = document.getElementById('emp-grid');
+  grid.innerHTML = '';
+  EMPLOYEES.forEach(emp => {
+    const recs = allRecords.filter(r => String(r.empId) === String(emp.id) && getYearTH(r.date) === String(curYear));
+    const sick     = recs.filter(r=>r.type==='sick').reduce((s,r)=>s+parseFloat(r.days||1),0);
+    const leaveD   = recs.filter(r=>r.type==='leave').reduce((s,r)=>s+parseFloat(r.days||1),0);
+    const halfD    = recs.filter(r=>r.type==='half-am'||r.type==='half-pm').reduce((s,r)=>s+parseFloat(r.days||0.5),0);
+    const workHol  = recs.filter(r=>r.type==='work-holiday').length;
+    const swap     = recs.filter(r=>r.type==='swap').length;
+    const balance  = workHol - swap;
+    grid.innerHTML += `
+    <div class="emp-card" style="border-top-color:${emp.color}" onclick="filterByEmp(${emp.id})">
+      <div class="emp-name" style="color:${emp.color}">${emp.name} <span style="font-size:13px;color:#8a9bb0">(${emp.nick})</span></div>
+      <div class="emp-stats">
+        <div class="stat-box"><div class="stat-num" style="color:#dc2626">${sick}</div><div class="stat-label">ลาป่วย (วัน)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#1d4ed8">${leaveD+halfD}</div><div class="stat-label">ลากิจ (วัน)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#c2410c">${workHol}</div><div class="stat-label">ทำงานวันหยุด</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:${balance>=0?'#15803d':'#dc2626'}">${balance}</div><div class="stat-label">สิทธิ์คงเหลือ</div></div>
+      </div>
+      <div style="margin-top:10px;font-size:11px;color:#8a9bb0;text-align:center">ปี ${curYear} · คลิกดูรายละเอียด</div>
+    </div>`;
+  });
+}
+
+function filterByEmp(empId) {
+  document.getElementById('h-emp-filter').value = empId;
+  showSection('history', document.querySelectorAll('.tab-btn')[2]);
+  renderHistory();
+}
+
+// ============================================================
+//  FORM
+// ============================================================
+const REASON_CONFIG = {
+  sick:          { icon:'🤒', title:'อาการป่วย / เหตุผล',              hint:'เช่น ไข้ ปวดหัว หรือต้องพบแพทย์',                    color:'#dc2626', required: true },
+  leave:         { icon:'📋', title:'เหตุผลการลากิจ',                  hint:'เช่น ธุระส่วนตัว ดูแลครอบครัว ติดต่อราชการ',          color:'#1d4ed8', required: true },
+  'half-am':     { icon:'🌅', title:'เหตุผลการลาครึ่งวันเช้า',         hint:'เช่น พบแพทย์ตอนเช้า ธุระด่วน',                        color:'#b45309', required: true },
+  'half-pm':     { icon:'🌇', title:'เหตุผลการลาครึ่งวันบ่าย',         hint:'เช่น รับลูกที่โรงเรียน นัดหมอ',                       color:'#b45309', required: true },
+  late:          { icon:'⏰', title:'เหตุผลการเข้างานสาย',              hint:'เช่น รถติด รถเสีย ธุระด่วน',                          color:'#7c3aed', required: true },
+  'work-holiday':{ icon:'💪', title:'งานที่ทำในวันหยุด / รายละเอียด', hint:'เช่น ส่งงานลูกค้า ซ่อมระบบฉุกเฉิน จัดอีเวนต์',       color:'#c2410c', required: true },
+  swap:          { icon:'🔄', title:'เหตุผลการใช้สิทธิ์แลกวันหยุด',   hint:'เช่น ลาพักผ่อน นัดหมายส่วนตัว',                      color:'#15803d', required: true },
+};
+
+function onTypeChange() {
+  const t = document.getElementById('f-type').value;
+  document.getElementById('f-enddate-group').style.display = (t==='sick'||t==='leave') ? 'block' : 'none';
+  document.getElementById('f-ref-group').style.display = (t==='swap') ? 'block' : 'none';
+
+  const cfg = REASON_CONFIG[t];
+  const textarea = document.getElementById('f-note');
+  const icon  = document.getElementById('f-reason-icon');
+  const title = document.getElementById('f-reason-title');
+  const hint  = document.getElementById('f-reason-hint');
+  const req   = document.getElementById('f-reason-required');
+
+  if (cfg) {
+    icon.textContent  = cfg.icon;
+    title.textContent = cfg.title;
+    hint.textContent  = cfg.hint;
+    textarea.style.borderLeftColor = cfg.color;
+    textarea.placeholder = cfg.hint || 'ระบุเหตุผล...';
+    req.style.display = cfg.required ? 'inline' : 'none';
+    // reset error state when type changes
+    textarea.style.borderColor = '';
+    textarea.style.borderLeftColor = cfg.color;
+    document.getElementById('f-reason-error').style.display = 'none';
+  } else {
+    icon.textContent  = '📝';
+    title.textContent = 'เหตุผล / รายละเอียด';
+    hint.textContent  = '';
+    textarea.style.borderLeftColor = 'var(--primary)';
+    textarea.style.borderColor = '';
+    textarea.placeholder = 'ระบุเหตุผลหรือรายละเอียดเพิ่มเติม...';
+    req.style.display = 'none';
+    document.getElementById('f-reason-error').style.display = 'none';
+  }
+}
+function clearReasonError() {
+  const textarea = document.getElementById('f-note');
+  const errEl    = document.getElementById('f-reason-error');
+  const type     = document.getElementById('f-type').value;
+  const cfg      = REASON_CONFIG[type];
+  errEl.style.display = 'none';
+  textarea.style.border = '';
+  textarea.style.borderLeft = '3px solid ' + (cfg ? cfg.color : 'var(--primary)');
+}
+
+function clearForm() {
+  ['f-emp','f-type','f-enddate','f-note','f-ref-date'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('f-date').value = toInputDate(new Date());
+  // reset reason field
+  document.getElementById('f-reason-error').style.display = 'none';
+  const textarea = document.getElementById('f-note');
+  textarea.style.border = '';
+  textarea.style.borderLeft = '3px solid var(--primary)';
+  onTypeChange();
+}
+
+function countWorkDays(startStr, endStr) {
+  const year = String(new Date(startStr+'T00:00:00').getFullYear()+543);
+  const holDates = (allHolidays[year]||[]).map(h=>h.date);
+  let count=0, d=new Date(startStr+'T00:00:00'), end=new Date(endStr+'T00:00:00');
+  while(d<=end){
+    if(d.getDay()!==0 && !holDates.includes(toInputDate(d))) count++;
+    d.setDate(d.getDate()+1);
+  }
+  return count;
+}
+
+async function saveRecord() {
+  const empId = document.getElementById('f-emp').value;
+  const type  = document.getElementById('f-type').value;
+  const date  = document.getElementById('f-date').value;
+  const enddate = document.getElementById('f-enddate').value;
+  const note  = document.getElementById('f-note').value.trim();
+  const refDate = document.getElementById('f-ref-date').value;
+  if (!empId || !type || !date) { alert('กรุณากรอกข้อมูลให้ครบ'); return; }
+
+  // ตรวจสอบว่ากรอกเหตุผลหรือยัง (บังคับทุกประเภท)
+  if (!note) {
+    const textarea = document.getElementById('f-note');
+    const errEl    = document.getElementById('f-reason-error');
+    const cfg = REASON_CONFIG[type];
+    // highlight border red
+    textarea.style.border = '2px solid #dc2626';
+    textarea.style.borderLeft = '3px solid #dc2626';
+    // show error message
+    errEl.style.display = 'block';
+    // shake animation
+    textarea.classList.remove('shake');
+    void textarea.offsetWidth; // reflow
+    textarea.classList.add('shake');
+    // scroll into view & focus
+    textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    textarea.focus();
+    return;
+  }
+
+  const dayMap = { sick:1, leave:1, 'half-am':0.5, 'half-pm':0.5, late:0, 'work-holiday':0, swap:0 };
+  let days = dayMap[type];
+  if ((type==='sick'||type==='leave') && enddate && enddate>date) days = countWorkDays(date, enddate);
+
+  showLoading('กำลังบันทึก...');
+  try {
+    const res = await api({ action:'addRecord', empId, type, date, enddate:enddate||'', days, note:note||'', refDate:refDate||'' });
+    if (!res.ok) throw new Error(res.msg);
+    await loadAllRecords();
+    hideLoading();
+    const emp = getEmployee(empId);
+    showAlert(`✅ บันทึกสำเร็จ: ${emp.name} (${emp.nick}) — ${TYPE_LABELS[type]}`);
+    clearForm();
+    renderDashboard();
+  } catch(e) {
+    hideLoading();
+    showAlert('❌ บันทึกไม่ได้: ' + e.message, 'error');
+  }
+}
+
+// ============================================================
+//  HISTORY
+// ============================================================
+function renderHistory() {
+  const empF  = document.getElementById('h-emp-filter').value;
+  const typeF = document.getElementById('h-type-filter').value;
+  const yearF = document.getElementById('h-year-filter').value;
+  const search= document.getElementById('h-search').value.toLowerCase();
+
+  let recs = [...allRecords];
+  if (empF)  recs = recs.filter(r => String(r.empId) === String(empF));
+  if (typeF) recs = recs.filter(r => r.type===typeF);
+  if (yearF) recs = recs.filter(r => getYearTH(r.date) === String(yearF));
+  if (search) recs = recs.filter(r => {
+    const e = getEmployee(r.empId);
+    return (e&&(e.name.includes(search)||e.nick.includes(search)))||TYPE_LABELS[r.type].includes(search)||(r.note||'').includes(search);
+  });
+  recs.sort((a,b) => String(b.date).localeCompare(String(a.date)));
+
+  const wrap = document.getElementById('history-table-wrap');
+  if (!recs.length) { wrap.innerHTML='<div class="empty-state">📭 ไม่มีรายการ</div>'; return; }
+
+  wrap.innerHTML = `<table>
+    <thead><tr><th>#</th><th>พนักงาน</th><th>ประเภท</th><th>วันที่</th><th>จำนวน</th><th>เหตุผล / รายละเอียด</th><th class="no-print">จัดการ</th></tr></thead>
+    <tbody>${recs.map((r,i)=>{
+      const emp = getEmployee(r.empId);
+      const dateStr = r.enddate && r.enddate > r.date ? `${formatDateTH(r.date)} – ${formatDateTH(r.enddate)}` : formatDateTH(r.date);
+      const _days = parseFloat(r.days) || 0;
+      const dayStr = r.type==='late'?'(สาย)':r.type==='work-holiday'?'+1 สิทธิ์':r.type==='swap'?'ใช้ 1 สิทธิ์':`${_days} วัน`;
+      return `<tr>
+        <td style="color:#8a9bb0;font-size:12px">${i+1}</td>
+        <td><strong style="color:${emp?.color||'#333'}">${emp?.name||'?'}</strong><br><small style="color:#8a9bb0">(${emp?.nick||''})</small></td>
+        <td><span class="badge ${TYPE_BADGE[r.type]||''}">${TYPE_LABELS[r.type]||r.type}</span></td>
+        <td>${dateStr}</td>
+        <td style="font-weight:600">${dayStr}</td>
+        <td style="font-size:13px;color:#555">${r.note||'—'}</td>
+        <td class="no-print"><button class="btn btn-danger btn-sm" onclick="confirmDelete(${r.id})">ลบ</button></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+let deleteTargetId = null;
+function confirmDelete(id) {
+  deleteTargetId = id;
+  document.getElementById('modal-title').textContent = '⚠️ ยืนยันการลบ';
+  document.getElementById('modal-body').innerHTML = '<p>ต้องการลบรายการนี้ออกจาก Google Sheet ใช่หรือไม่?</p>';
+  document.getElementById('modal-confirm').onclick = doDelete;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+async function doDelete() {
+  closeModal();
+  showLoading('กำลังลบ...');
+  try {
+    const res = await api({ action:'deleteRecord', id: deleteTargetId });
+    if (!res.ok) throw new Error(res.msg);
+    await loadAllRecords();
+    renderHistory();
+    renderDashboard();
+    showAlert('🗑️ ลบรายการเรียบร้อยแล้ว');
+  } catch(e) {
+    showAlert('❌ ลบไม่ได้: ' + e.message, 'error');
+  } finally { hideLoading(); }
+}
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+
+// ============================================================
+//  SUMMARY
+// ============================================================
+function renderSummary() {
+  const year = document.getElementById('sum-year').value;
+  const recs = allRecords.filter(r => getYearTH(r.date) === String(year));
+  const content = document.getElementById('summary-content');
+  content.innerHTML = EMPLOYEES.map(emp => {
+    const er = recs.filter(r => String(r.empId) === String(emp.id));
+    const sick    = er.filter(r=>r.type==='sick').reduce((s,r)=>s+parseFloat(r.days||1),0);
+    const leaveF  = er.filter(r=>r.type==='leave').reduce((s,r)=>s+parseFloat(r.days||1),0);
+    const halfAM  = er.filter(r=>r.type==='half-am').length;
+    const halfPM  = er.filter(r=>r.type==='half-pm').length;
+    const late    = er.filter(r=>r.type==='late').length;
+    const workHol = er.filter(r=>r.type==='work-holiday').length;
+    const swap    = er.filter(r=>r.type==='swap').length;
+    const bal     = workHol - swap;
+    return `<div class="card" style="border-left:5px solid ${emp.color};margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+        <div><div style="font-family:'Mitr',sans-serif;font-size:18px;font-weight:600;color:${emp.color}">${emp.name} <span style="font-size:13px;color:#8a9bb0">(${emp.nick})</span></div><div style="font-size:12px;color:#8a9bb0">สรุปปี ${year}</div></div>
+        <button class="btn btn-outline btn-sm no-print" onclick="printEmployee(${emp.id},${year})">🖨️ พิมพ์ PDF</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:14px">
+        <div class="stat-box"><div class="stat-num" style="color:#dc2626">${sick}</div><div class="stat-label">ลาป่วย (วัน)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#1d4ed8">${leaveF}</div><div class="stat-label">ลากิจ (วัน)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#b45309">${(halfAM+halfPM)*0.5}</div><div class="stat-label">ลาครึ่งวัน (วัน)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#7c3aed">${late}</div><div class="stat-label">เข้าสาย (ครั้ง)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#c2410c">${workHol}</div><div class="stat-label">ทำงานวันหยุด</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:${bal>=0?'#15803d':'#dc2626'}">${bal}</div><div class="stat-label">สิทธิ์คงเหลือ</div></div>
+      </div>
+      ${er.length ? `<div style="margin-top:14px"><div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">รายการทั้งหมด (${er.length})</div>
+      <div class="table-wrap"><table><thead><tr><th>วันที่</th><th>ประเภท</th><th>จำนวน</th><th>เหตุผล / รายละเอียด</th></tr></thead><tbody>
+      ${[...er].sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(r=>{
+        const ds = r.enddate && r.enddate>r.date?`${formatDateTH(r.date)} – ${formatDateTH(r.enddate)}`:formatDateTH(r.date);
+        const _d = parseFloat(r.days) || 0;
+        const dv = r.type==='late'?'(สาย)':r.type==='work-holiday'?'+1 สิทธิ์':r.type==='swap'?'ใช้ 1 สิทธิ์':`${_d}วัน`;
+        return `<tr><td>${ds}</td><td><span class="badge ${TYPE_BADGE[r.type]||''}">${TYPE_LABELS[r.type]||r.type}</span></td><td>${dv}</td><td>${r.note||'—'}</td></tr>`;
+      }).join('')}
+      </tbody></table></div></div>`:'<div class="empty-state" style="padding:16px;color:#8a9bb0">ไม่มีรายการในปีนี้</div>'}
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+//  PRINT
+// ============================================================
+function printEmployee(empId, year) {
+  const emp = getEmployee(empId);
+  const recs = allRecords.filter(r => String(r.empId) === String(empId) && getYearTH(r.date) === String(year));
+  const sick    = recs.filter(r=>r.type==='sick').reduce((s,r)=>s+parseFloat(r.days||1),0);
+  const leaveF  = recs.filter(r=>r.type==='leave').reduce((s,r)=>s+parseFloat(r.days||1),0);
+  const halfD   = recs.filter(r=>r.type==='half-am'||r.type==='half-pm').reduce((s,r)=>s+parseFloat(r.days||0.5),0);
+  const late    = recs.filter(r=>r.type==='late').length;
+  const workHol = recs.filter(r=>r.type==='work-holiday').length;
+  const swap    = recs.filter(r=>r.type==='swap').length;
+
+  const win = window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Mitr:wght@500;600&display=swap" rel="stylesheet">
+  <title>${emp.name} ปี ${year}</title>
+  <style>
+    body{font-family:'Sarabun',sans-serif;padding:30px;color:#1a2332;font-size:14px}
+    h1{font-family:'Mitr',sans-serif;color:${emp.color};font-size:24px;margin-bottom:4px}
+    .sub{color:#666;font-size:12px;margin-bottom:20px}
+    .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:24px}
+    .stat{background:#f5f8ff;border-radius:8px;padding:12px;text-align:center}
+    .stat-n{font-size:26px;font-weight:700;color:${emp.color}}
+    .stat-l{font-size:11px;color:#666;margin-top:2px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th{background:${emp.color};color:white;padding:9px 11px;text-align:left}
+    td{padding:8px 11px;border-bottom:1px solid #e2e8f0}
+    tr:nth-child(even){background:#f8fafc}
+    .footer{margin-top:30px;border-top:1px solid #ddd;padding-top:12px;font-size:11px;color:#999;text-align:right}
+    @media print{body{padding:15px}}
+  </style></head><body>
+  <h1>${emp.name} (${emp.nick})</h1>
+  <div class="sub">รายงานสรุปการลาประจำปี ${year} &nbsp;·&nbsp; พิมพ์: ${formatDateTH(new Date())}</div>
+  <div class="stats">
+    <div class="stat"><div class="stat-n" style="color:#dc2626">${sick}</div><div class="stat-l">ลาป่วย (วัน)</div></div>
+    <div class="stat"><div class="stat-n" style="color:#1d4ed8">${leaveF}</div><div class="stat-l">ลากิจ (วัน)</div></div>
+    <div class="stat"><div class="stat-n" style="color:#b45309">${halfD}</div><div class="stat-l">ลาครึ่งวัน (วัน)</div></div>
+    <div class="stat"><div class="stat-n" style="color:#7c3aed">${late}</div><div class="stat-l">เข้าสาย (ครั้ง)</div></div>
+    <div class="stat"><div class="stat-n" style="color:#c2410c">${workHol}</div><div class="stat-l">ทำงานวันหยุด</div></div>
+    <div class="stat"><div class="stat-n" style="color:${(workHol-swap)>=0?'#15803d':'#dc2626'}">${workHol-swap}</div><div class="stat-l">สิทธิ์คงเหลือ</div></div>
+  </div>
+  <table><thead><tr><th>วันที่</th><th>ประเภท</th><th>จำนวน</th><th>เหตุผล / รายละเอียด</th></tr></thead><tbody>
+  ${recs.length===0?'<tr><td colspan="4" style="text-align:center;color:#999;padding:20px">ไม่มีรายการ</td></tr>':
+    [...recs].sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(r=>{
+      const ds = r.enddate&&r.enddate>r.date?`${formatDateTH(r.date)} – ${formatDateTH(r.enddate)}`:formatDateTH(r.date);
+      const _pd = parseFloat(r.days) || 0;
+      const dv = r.type==='late'?'(สาย)':r.type==='work-holiday'?'+1 สิทธิ์':r.type==='swap'?'ใช้ 1 สิทธิ์':`${_pd}วัน`;
+      return `<tr><td>${ds}</td><td>${TYPE_LABELS[r.type]||r.type}</td><td>${dv}</td><td>${r.note||'—'}</td></tr>`;
+    }).join('')}
+  </tbody></table>
+  <div class="footer">ระบบบันทึกการลาพนักงาน · ${formatDateTH(new Date())}</div>
+  <script>window.onload=()=>window.print()<\/script>
+  </body></html>`);
+  win.document.close();
+}
+
+function printAllPDF() {
+  const year = document.getElementById('sum-year').value;
+  EMPLOYEES.forEach(emp => printEmployee(emp.id, year));
+}
+
+// ============================================================
+//  HOLIDAYS
+// ============================================================
+function renderHolidayList() {
+  const year = document.getElementById('hol-year').value;
+  const list = allHolidays[year] || [];
+  document.getElementById('hol-year-display').textContent = `ปี ${year}`;
+  document.getElementById('hol-count').textContent = list.length;
+  const container = document.getElementById('holiday-list');
+  if (!list.length) { container.innerHTML='<div style="color:#8a9bb0;font-size:13px">ยังไม่มีวันหยุด</div>'; return; }
+  container.innerHTML = [...list].sort((a,b)=>a.date>b.date?1:-1).map(h=>
+    `<div class="holiday-chip">${formatDateTH(h.date)} — ${h.name} <span class="del" onclick="removeHoliday('${year}','${h.date}')">✕</span></div>`
+  ).join('');
+}
+
+async function addHoliday() {
+  const year = document.getElementById('hol-year').value;
+  const date = document.getElementById('hol-date').value;
+  const name = document.getElementById('hol-name').value.trim();
+  if (!date || !name) { alert('กรุณากรอกวันที่และชื่อ'); return; }
+  if (!allHolidays[year]) allHolidays[year] = [];
+  if (allHolidays[year].find(h=>h.date===date)) { alert('วันที่นี้มีอยู่แล้ว'); return; }
+  allHolidays[year].push({ date, name });
+  await saveHolidaysToSheet(year);
+  document.getElementById('hol-date').value = '';
+  document.getElementById('hol-name').value = '';
+  renderHolidayList();
+}
+
+async function removeHoliday(year, date) {
+  if (!allHolidays[year]) return;
+  allHolidays[year] = allHolidays[year].filter(h => h.date !== date);
+  await saveHolidaysToSheet(year);
+  renderHolidayList();
+}
+
+async function saveHolidaysToSheet(year) {
+  showLoading('กำลังบันทึกวันหยุด...');
+  try {
+    const res = await api({ action:'setHolidays', year, holidays: JSON.stringify(allHolidays[year]||[]) });
+    if (!res.ok) throw new Error(res.msg);
+  } catch(e) { showAlert('❌ บันทึกวันหยุดไม่ได้: '+e.message,'error'); }
+  hideLoading();
+}
+
+async function loadDefaultHolidays() {
+  const defaults = [
+    {date:'2025-01-01',name:'วันขึ้นปีใหม่'},{date:'2025-02-12',name:'วันมาฆบูชา'},
+    {date:'2025-04-06',name:'วันจักรี'},{date:'2025-04-13',name:'วันสงกรานต์'},
+    {date:'2025-04-14',name:'วันสงกรานต์'},{date:'2025-04-15',name:'วันสงกรานต์'},
+    {date:'2025-05-01',name:'วันแรงงาน'},{date:'2025-05-05',name:'วันฉัตรมงคล'},
+    {date:'2025-05-12',name:'วันวิสาขบูชา'},{date:'2025-06-03',name:'วันเฉลิมพระชนมพรรษาพระราชินี'},
+    {date:'2025-07-28',name:'วันเฉลิมพระชนมพรรษา ร.10'},{date:'2025-08-12',name:'วันแม่แห่งชาติ'},
+    {date:'2025-10-13',name:'วันคล้ายวันสวรรคต ร.9'},{date:'2025-10-23',name:'วันปิยมหาราช'},
+    {date:'2025-12-05',name:'วันพ่อแห่งชาติ'},{date:'2025-12-10',name:'วันรัฐธรรมนูญ'},
+  ];
+  allHolidays['2568'] = defaults;
+  document.getElementById('hol-year').value = '2568';
+  await saveHolidaysToSheet('2568');
+  renderHolidayList();
+  showAlert('✅ โหลดวันหยุดปี 2568 แล้ว (16 วัน)');
+}
+</script>
+</body>
+</html>
