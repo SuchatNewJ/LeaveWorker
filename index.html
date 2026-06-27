@@ -3,134 +3,178 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบบันทึกการลา</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Mitr:wght@400;500;600&display=swap" rel="stylesheet">
+<title>ระบบบันทึกการลา · ENZONE SERVICE</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=Mitr:wght@400;500;600;700&family=Inter:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f0f4f8; --surface: #ffffff; --surface2: #f8fafc;
-  --primary: #1e4d8c; --primary-light: #2563b0;
-  --accent: #e85d26; --accent2: #16a34a;
-  --text: #1a2332; --text2: #4a5568; --text3: #8a9bb0;
-  --border: #d1dce8; --shadow: 0 2px 12px rgba(30,77,140,0.08); --radius: 10px;
+  /* ENZONE Brand */
+  --navy-deep:    #0D2137;
+  --navy-mid:     #14304D;
+  --navy-light:   #1A3A5C;
+  --navy-border:  #2A4A6A;
+  --orange:       #F97316;
+  --orange-dark:  #EA580C;
+  --orange-light: #FED7AA;
+  --orange-tint:  #FFF4EC;
+
+  --bg: #F3F6FA; --surface: #ffffff; --surface2: #F8FAFC;
+  --text: #0D2137; --text2: #475569; --text3: #94A3B8;
+  --border: #E2E8F0;
+  --success: #16A34A; --success-bg:#DCFCE7;
+  --warning: #B45309; --warning-bg:#FEF3C7;
+  --error:   #DC2626; --error-bg:#FEE2E2;
+  --purple:  #7C3AED; --purple-bg:#F3E8FF;
+
+  --shadow-sm: 0 1px 3px rgba(13,33,55,0.08);
+  --shadow: 0 4px 18px rgba(13,33,55,0.10);
+  --shadow-lg: 0 16px 40px rgba(13,33,55,0.18);
+  --radius: 14px; --radius-sm: 9px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--text); font-size: 15px; }
 
 /* SETUP SCREEN */
 #setup-screen {
-  position: fixed; inset: 0; background: var(--primary);
+  position: fixed; inset: 0;
+  background: radial-gradient(circle at 20% 20%, var(--navy-light) 0%, var(--navy-deep) 55%, #081522 100%);
   display: flex; align-items: center; justify-content: center; z-index: 9999;
   flex-direction: column; gap: 24px; padding: 24px;
 }
 .setup-card {
-  background: white; border-radius: 16px; padding: 32px; max-width: 500px; width: 100%;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  background: white; border-radius: 18px; padding: 36px; max-width: 520px; width: 100%;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.35);
+  border-top: 4px solid var(--orange);
 }
-.setup-title { font-family:'Mitr',sans-serif; font-size:22px; color:var(--primary); margin-bottom:8px; }
-.setup-sub { color:var(--text2); font-size:13px; margin-bottom:20px; line-height:1.6; }
-.setup-steps { background:#f0f5ff; border-radius:10px; padding:16px; margin-bottom:20px; font-size:13px; line-height:2; }
+.setup-brand { display:flex; align-items:center; gap:8px; margin-bottom:18px; }
+.setup-brand .dot { width:10px; height:10px; border-radius:50%; background:var(--orange); }
+.setup-brand span { font-family:'Mitr',sans-serif; font-weight:700; font-size:13px; letter-spacing:0.08em; color:var(--navy-deep); }
+.setup-brand span.acc { color:var(--orange); }
+.setup-title { font-family:'Mitr',sans-serif; font-size:23px; font-weight:600; color:var(--navy-deep); margin-bottom:8px; }
+.setup-sub { color:var(--text2); font-size:13px; margin-bottom:20px; line-height:1.7; }
+.setup-steps { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); padding:18px; margin-bottom:20px; font-size:13px; line-height:2; }
 .setup-steps ol { padding-left:18px; }
 .setup-steps li { margin-bottom:4px; }
-.setup-steps code { background:#dbeafe; color:#1e40af; padding:1px 6px; border-radius:4px; font-size:12px; }
-.url-input { width:100%; padding:12px; border:2px solid var(--border); border-radius:8px; font-size:13px; font-family:'Sarabun',sans-serif; margin-bottom:12px; }
-.url-input:focus { outline:none; border-color:var(--primary); }
-.btn { padding:10px 20px; border-radius:8px; border:none; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; font-weight:600; transition:all 0.2s; }
-.btn-primary { background:var(--primary); color:white; width:100%; padding:14px; font-size:15px; }
-.btn-primary:hover { background:var(--primary-light); }
+.setup-steps code { background:var(--orange-tint); color:var(--orange-dark); padding:1px 6px; border-radius:4px; font-size:12px; font-weight:600; }
+.url-input { width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-size:13px; font-family:'Sarabun',sans-serif; margin-bottom:12px; transition:border-color .15s; }
+.url-input:focus { outline:none; border-color:var(--orange); }
+.btn { padding:10px 20px; border-radius:var(--radius-sm); border:none; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; font-weight:600; transition:all 0.18s; }
+.btn-primary { background:var(--orange); color:white; width:100%; padding:14px; font-size:15px; box-shadow:0 6px 16px rgba(249,115,22,0.3); }
+.btn-primary:hover { background:var(--orange-dark); transform:translateY(-1px); }
 .btn-sm { padding:6px 12px; font-size:12px; }
-.btn-danger { background:#dc2626; color:white; }
-.btn-outline { background:transparent; border:1.5px solid var(--primary); color:var(--primary); }
-.btn-outline:hover { background:var(--primary); color:white; }
-.btn-success { background:var(--accent2); color:white; }
+.btn-danger { background:var(--error); color:white; }
+.btn-danger:hover { background:#B91C1C; }
+.btn-outline { background:transparent; border:1.5px solid var(--navy-light); color:var(--navy-light); }
+.btn-outline:hover { background:var(--navy-light); color:white; }
+.btn-success { background:var(--success); color:white; }
 
 /* HEADER */
-.header { background:var(--primary); color:white; padding:0 24px; display:flex; align-items:center; justify-content:space-between; height:60px; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
-.header-title { font-family:'Mitr',sans-serif; font-size:20px; font-weight:600; }
-.header-sub { font-size:11px; opacity:0.7; margin-top:1px; }
-.conn-badge { font-size:11px; padding:4px 10px; border-radius:20px; font-weight:600; }
-.conn-ok { background:#dcfce7; color:#15803d; }
-.conn-err { background:#fee2e2; color:#dc2626; cursor:pointer; }
+.header {
+  background: linear-gradient(120deg, var(--navy-deep) 0%, var(--navy-light) 100%);
+  color:white; padding:0 24px; display:flex; align-items:center; justify-content:space-between;
+  height:64px; box-shadow:0 2px 10px rgba(0,0,0,0.25); border-bottom:3px solid var(--orange);
+}
+.header-title { font-family:'Mitr',sans-serif; font-size:19px; font-weight:600; display:flex; align-items:center; gap:8px; }
+.header-sub { font-size:11px; opacity:0.65; margin-top:2px; }
+.conn-badge { font-size:11px; padding:4px 11px; border-radius:20px; font-weight:600; letter-spacing:.02em; }
+.conn-ok { background:rgba(34,197,94,0.18); color:#86EFAC; border:1px solid rgba(134,239,172,0.35); }
+.conn-err { background:rgba(220,38,38,0.18); color:#FCA5A5; cursor:pointer; border:1px solid rgba(252,165,165,0.35); }
 
 /* NAV TABS */
-.nav-tabs { background:var(--surface); border-bottom:2px solid var(--border); display:flex; padding:0 24px; gap:4px; overflow-x:auto; }
-.tab-btn { padding:12px 20px; border:none; background:none; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; font-weight:500; color:var(--text2); border-bottom:3px solid transparent; margin-bottom:-2px; white-space:nowrap; transition:all 0.2s; }
-.tab-btn:hover { color:var(--primary); }
-.tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); font-weight:600; }
+.nav-tabs { background:var(--surface); border-bottom:1px solid var(--border); display:flex; padding:0 24px; gap:4px; overflow-x:auto; }
+.tab-btn { padding:13px 18px; border:none; background:none; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; font-weight:500; color:var(--text2); border-bottom:3px solid transparent; margin-bottom:-1px; white-space:nowrap; transition:all 0.18s; }
+.tab-btn:hover { color:var(--orange-dark); }
+.tab-btn.active { color:var(--navy-deep); border-bottom-color:var(--orange); font-weight:700; }
 
 /* LAYOUT */
-.container { max-width:1100px; margin:0 auto; padding:24px 16px; }
+.container { max-width:1140px; margin:0 auto; padding:24px 16px; }
 
 /* CARD */
-.card { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px; margin-bottom:20px; }
-.card-title { font-family:'Mitr',sans-serif; font-size:16px; font-weight:500; color:var(--primary); margin-bottom:16px; }
+.card { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px; margin-bottom:20px; border:1px solid rgba(13,33,55,0.03); }
+.card-title { font-family:'Mitr',sans-serif; font-size:16px; font-weight:600; color:var(--navy-deep); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
 
 /* FORM */
 .form-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
 .form-group { display:flex; flex-direction:column; gap:5px; }
 .form-group label { font-size:13px; font-weight:600; color:var(--text2); }
-.form-group select, .form-group input, .form-group textarea { border:1.5px solid var(--border); border-radius:8px; padding:9px 12px; font-family:'Sarabun',sans-serif; font-size:14px; background:var(--surface); color:var(--text); transition:border-color 0.2s; }
-.form-group select:focus, .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--primary); }
+.form-group select, .form-group input, .form-group textarea { border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 12px; font-family:'Sarabun',sans-serif; font-size:14px; background:var(--surface); color:var(--text); transition:border-color 0.15s; }
+.form-group select:focus, .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--orange); }
 .form-group textarea { resize:vertical; min-height:60px; }
 .form-full { grid-column:1 / -1; }
-.btn-row { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
+.btn-row { display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+
+/* DEDUCT TOGGLE */
+.deduct-card { display:flex; align-items:center; gap:16px; background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:14px 16px; transition:all .2s; }
+.deduct-card.is-on  { background:var(--orange-tint); border-color:var(--orange-light); }
+.deduct-card.is-off { background:#F1F5F9; border-color:#CBD5E1; }
+.toggle-switch { position:relative; width:46px; height:26px; flex:none; display:inline-block; cursor:pointer; }
+.toggle-switch input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-slider { position:absolute; inset:0; background:#CBD5E1; border-radius:26px; transition:.25s; }
+.toggle-slider::before { content:''; position:absolute; width:20px; height:20px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.25s; box-shadow:0 1px 3px rgba(0,0,0,.25); }
+.toggle-switch input:checked + .toggle-slider { background: var(--orange); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+.deduct-text-title { font-weight:700; font-size:14px; color:var(--navy-deep); }
+.deduct-text-hint { font-size:12px; color:var(--text2); margin-top:2px; line-height:1.5; }
 
 /* TABLE */
 .table-wrap { overflow-x:auto; }
 table { width:100%; border-collapse:collapse; font-size:13px; }
-thead th { background:var(--primary); color:white; padding:10px 12px; text-align:left; font-weight:600; white-space:nowrap; }
+thead th { background:var(--navy-deep); color:white; padding:11px 12px; text-align:left; font-weight:600; white-space:nowrap; }
 tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
-tbody tr:hover { background:#f0f5ff; }
-tbody td { padding:9px 12px; vertical-align:top; }
-.badge { display:inline-block; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:600; }
-.badge-sick { background:#fee2e2; color:#dc2626; }
-.badge-leave { background:#dbeafe; color:#1d4ed8; }
-.badge-half { background:#fef9c3; color:#b45309; }
-.badge-late { background:#f3e8ff; color:#7c3aed; }
-.badge-swap { background:#dcfce7; color:#15803d; }
-.badge-work-holiday { background:#fff7ed; color:#c2410c; }
+tbody tr:hover { background:var(--orange-tint); }
+tbody td { padding:10px 12px; vertical-align:top; }
+.cell-strong { font-weight:700; color:var(--navy-deep); }
+.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:.01em; }
+.badge-sick { background:var(--error-bg); color:var(--error); }
+.badge-leave { background:#E0EAF5; color:var(--navy-light); }
+.badge-half { background:var(--warning-bg); color:var(--warning); }
+.badge-late { background:var(--purple-bg); color:var(--purple); }
+.badge-swap { background:var(--success-bg); color:var(--success); }
+.badge-work-holiday { background:var(--orange-tint); color:var(--orange-dark); }
+.badge-no-deduct { background:#F1F5F9; color:#64748B; border:1px dashed #CBD5E1; }
 
 /* EMP CARDS */
-.emp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
-.emp-card { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); padding:18px; border-top:4px solid var(--primary); cursor:pointer; transition:transform 0.2s,box-shadow 0.2s; }
-.emp-card:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(30,77,140,0.12); }
-.emp-name { font-family:'Mitr',sans-serif; font-size:16px; font-weight:500; }
-.emp-stats { margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.stat-box { background:var(--surface2); border-radius:8px; padding:8px; text-align:center; }
-.stat-num { font-size:22px; font-weight:700; font-family:'Mitr',sans-serif; }
+.emp-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
+.emp-card { background:var(--surface); border-radius:var(--radius); box-shadow:var(--shadow); padding:20px; border-top:4px solid var(--navy-light); cursor:pointer; transition:transform 0.2s,box-shadow 0.2s; }
+.emp-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
+.emp-name { font-family:'Mitr',sans-serif; font-size:16px; font-weight:600; }
+.emp-stats { margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.stat-box { background:var(--surface2); border-radius:var(--radius-sm); padding:10px; text-align:center; }
+.stat-num { font-size:23px; font-weight:700; font-family:'Inter',sans-serif; font-variant-numeric: tabular-nums; }
 .stat-label { font-size:11px; color:var(--text3); margin-top:2px; }
 
 /* FILTER BAR */
 .filter-bar { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px; align-items:center; }
-.filter-bar select, .filter-bar input { padding:8px 12px; border:1.5px solid var(--border); border-radius:8px; font-family:'Sarabun',sans-serif; font-size:13px; background:var(--surface); }
+.filter-bar select, .filter-bar input { padding:9px 12px; border:1.5px solid var(--border); border-radius:var(--radius-sm); font-family:'Sarabun',sans-serif; font-size:13px; background:var(--surface); }
 
 /* ALERT */
-.alert { padding:12px 16px; border-radius:8px; font-size:13px; margin-bottom:16px; }
-.alert-success { background:#dcfce7; color:#15803d; border:1px solid #86efac; }
-.alert-error { background:#fee2e2; color:#dc2626; border:1px solid #fca5a5; }
+.alert { padding:13px 16px; border-radius:var(--radius-sm); font-size:13px; margin-bottom:16px; font-weight:500; }
+.alert-success { background:var(--success-bg); color:#15803d; border:1px solid #86efac; }
+.alert-error { background:var(--error-bg); color:var(--error); border:1px solid #fca5a5; }
 .alert-info { background:#dbeafe; color:#1d4ed8; border:1px solid #93c5fd; }
 
 /* HOLIDAY CHIP */
-.holiday-chip { display:inline-flex; align-items:center; gap:6px; background:#fef3c7; color:#92400e; border-radius:20px; padding:5px 12px; font-size:12px; margin:4px; }
-.holiday-chip .del { cursor:pointer; color:#b45309; font-weight:bold; }
+.holiday-chip { display:inline-flex; align-items:center; gap:6px; background:var(--orange-tint); color:var(--orange-dark); border-radius:20px; padding:6px 12px; font-size:12px; margin:4px; font-weight:500; border:1px solid var(--orange-light); }
+.holiday-chip .del { cursor:pointer; color:var(--orange-dark); font-weight:bold; opacity:.7; }
+.holiday-chip .del:hover { opacity:1; }
 
 /* LOADING */
-.loading { display:inline-block; width:16px; height:16px; border:2px solid #ddd; border-top-color:var(--primary); border-radius:50%; animation:spin 0.6s linear infinite; }
+.loading { display:inline-block; width:18px; height:18px; border:2.5px solid #ddd; border-top-color:var(--orange); border-radius:50%; animation:spin 0.6s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
-.loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.7); display:flex; align-items:center; justify-content:center; z-index:500; flex-direction:column; gap:12px; }
-.loading-text { font-size:14px; color:var(--primary); font-weight:600; }
+.loading-overlay { position:fixed; inset:0; background:rgba(13,33,55,0.45); display:flex; align-items:center; justify-content:center; z-index:500; flex-direction:column; gap:12px; backdrop-filter:blur(2px); }
+.loading-text { font-size:14px; color:white; font-weight:600; background:rgba(13,33,55,.7); padding:8px 16px; border-radius:20px; }
 
 /* SECTION */
 .section { display:none; }
 .section.active { display:block; }
 
 /* MODAL */
-.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(13,33,55,0.55); z-index:1000; align-items:center; justify-content:center; }
 .modal-overlay.open { display:flex; }
-.modal { background:white; border-radius:12px; padding:24px; max-width:480px; width:90%; }
-.modal-title { font-family:'Mitr',sans-serif; font-size:18px; color:var(--primary); margin-bottom:12px; }
-.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:16px; }
+.modal { background:white; border-radius:16px; padding:26px; max-width:480px; width:90%; box-shadow:var(--shadow-lg); }
+.modal-title { font-family:'Mitr',sans-serif; font-size:18px; color:var(--navy-deep); margin-bottom:12px; }
+.modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
 
-.empty-state { text-align:center; padding:40px; color:var(--text3); }
+.empty-state { text-align:center; padding:48px; color:var(--text3); }
 
 @keyframes shake {
   0%,100% { transform: translateX(0); }
@@ -146,6 +190,11 @@ tbody td { padding:9px 12px; vertical-align:top; }
   body { background:white; }
   .card { box-shadow:none; border:1px solid #ddd; }
 }
+@media (max-width:600px) {
+  .header { padding:0 14px; }
+  .header-title { font-size:16px; }
+  .nav-tabs { padding:0 8px; }
+}
 </style>
 </head>
 <body>
@@ -153,9 +202,10 @@ tbody td { padding:9px 12px; vertical-align:top; }
 <!-- SETUP SCREEN -->
 <div id="setup-screen">
   <div class="setup-card">
+    <div class="setup-brand"><span class="dot"></span><span>ENZONE<span class="acc"> SERVICE</span></span></div>
     <div class="setup-title">🔗 เชื่อมต่อ Google Sheet</div>
     <div class="setup-sub">ระบบนี้เก็บข้อมูลลงใน Google Sheet โดยตรง<br>ต้องตั้งค่าครั้งแรกครั้งเดียว จากนั้นจะจำ URL ไว้ให้อัตโนมัติ</div>
-    
+
     <div class="setup-steps">
       <strong>ขั้นตอนการตั้งค่า:</strong>
       <ol>
@@ -169,7 +219,7 @@ tbody td { padding:9px 12px; vertical-align:top; }
         <li>วาง URL ด้านล่าง แล้วกดเชื่อมต่อ</li>
       </ol>
     </div>
-    
+
     <input class="url-input" id="setup-url" type="url" placeholder="https://script.google.com/macros/s/...../exec" value="">
     <button class="btn btn-primary" onclick="connectSheet()">🔗 เชื่อมต่อและเริ่มใช้งาน</button>
     <div id="setup-error" style="margin-top:12px;font-size:13px;color:#dc2626;display:none"></div>
@@ -182,12 +232,12 @@ tbody td { padding:9px 12px; vertical-align:top; }
 <div class="header no-print">
   <div>
     <div class="header-title">📋 ระบบบันทึกการลาพนักงาน</div>
-    <div class="header-sub">เชื่อมต่อกับ Google Sheet</div>
+    <div class="header-sub">ENZONE SERVICE · เชื่อมต่อกับ Google Sheet</div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div id="conn-status" class="conn-badge conn-ok">● เชื่อมต่อแล้ว</div>
     <div style="font-size:11px;opacity:0.7" id="current-date"></div>
-    <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:white;font-size:11px" onclick="changeUrl()">⚙️ เปลี่ยน URL</button>
+    <button class="btn btn-sm" style="background:rgba(255,255,255,0.12);color:white;font-size:11px" onclick="changeUrl()">⚙️ เปลี่ยน URL</button>
   </div>
 </div>
 
@@ -244,6 +294,22 @@ tbody td { padding:9px 12px; vertical-align:top; }
         <label>อ้างอิงวันที่ทำงาน (แลกจาก)</label>
         <input type="date" id="f-ref-date">
       </div>
+
+      <!-- DEDUCT TOGGLE: only for leave / half-am / half-pm / late -->
+      <div class="form-group form-full" id="f-deduct-group" style="display:none">
+        <label>ลักษณะการหักวันลา</label>
+        <div class="deduct-card" id="deduct-card">
+          <label class="toggle-switch">
+            <input type="checkbox" id="f-deduct" onchange="updateDeductUI()">
+            <span class="toggle-slider"></span>
+          </label>
+          <div>
+            <div class="deduct-text-title" id="f-deduct-title">—</div>
+            <div class="deduct-text-hint" id="f-deduct-hint">—</div>
+          </div>
+        </div>
+      </div>
+
       <div class="form-group form-full" id="f-reason-group">
         <label id="f-reason-label" style="display:flex;align-items:center;gap:6px;">
           <span id="f-reason-icon">📝</span>
@@ -252,7 +318,7 @@ tbody td { padding:9px 12px; vertical-align:top; }
         </label>
         <textarea id="f-note" rows="3"
           placeholder="ระบุเหตุผลหรือรายละเอียดเพิ่มเติม..."
-          style="border-left:3px solid var(--primary);padding-left:10px;transition:all 0.2s"
+          style="border-left:3px solid var(--navy-light);padding-left:10px;transition:all 0.2s"
           oninput="clearReasonError()"></textarea>
         <div id="f-reason-hint" style="font-size:11px;color:#8a9bb0;margin-top:3px"></div>
         <div id="f-reason-error" style="display:none;font-size:12px;color:#dc2626;margin-top:4px;font-weight:600;">⚠️ กรุณาระบุเหตุผลก่อนบันทึก</div>
@@ -283,6 +349,11 @@ tbody td { padding:9px 12px; vertical-align:top; }
         <option value="late">เข้างานสาย</option>
         <option value="work-holiday">ทำงานวันหยุด</option>
         <option value="swap">ใช้สิทธิ์แลก</option>
+      </select>
+      <select id="h-deduct-filter" onchange="renderHistory()">
+        <option value="">⚖️ หัก/ไม่หักทั้งหมด</option>
+        <option value="deducted">✅ เฉพาะที่หักวันลา</option>
+        <option value="not-deducted">🚫 เฉพาะที่ไม่หักวันลา</option>
       </select>
       <select id="h-year-filter" onchange="renderHistory()"></select>
       <input type="text" id="h-search" placeholder="🔍 ค้นหา..." oninput="renderHistory()" style="min-width:160px">
@@ -363,10 +434,10 @@ tbody td { padding:9px 12px; vertical-align:top; }
 //  CONFIG
 // ============================================================
 const EMPLOYEES = [
-  { id: 1, name: 'จักร์กริช', nick: 'กริช', color: '#1e4d8c' },
-  { id: 2, name: 'ไชยวัฒน์',  nick: 'เติ้ล',  color: '#7c3aed' },
-  { id: 3, name: 'ณัฐกานต์',  nick: 'อิง', color: '#c2410c' },
-  { id: 4, name: 'สุชาติ',    nick: 'นิว',  color: '#15803d' },
+  { id: 1, name: 'จักร์กริช', nick: 'กริช', color: '#1A3A5C' },
+  { id: 2, name: 'ไชยวัฒน์',  nick: 'เติ้ล',  color: '#7C3AED' },
+  { id: 3, name: 'ณัฐกานต์',  nick: 'อิง', color: '#EA580C' },
+  { id: 4, name: 'สุชาติ',    nick: 'นิว',  color: '#16A34A' },
 ];
 const TYPE_LABELS = {
   sick:'ลาป่วย', leave:'ลากิจ', 'half-am':'ลาครึ่งวันเช้า',
@@ -377,6 +448,15 @@ const TYPE_BADGE = {
   sick:'badge-sick', leave:'badge-leave', 'half-am':'badge-half',
   'half-pm':'badge-half', late:'badge-late',
   'work-holiday':'badge-work-holiday', swap:'badge-swap'
+};
+
+// ประเภทที่ "เลือกได้" ว่าจะหักวันลาหรือไม่
+const DEDUCT_TYPES = ['leave','half-am','half-pm','late'];
+const DEDUCT_CONFIG = {
+  leave:    { defaultOn:true,  onTitle:'✅ หักวันลากิจ',      onHint:'นับวันนี้รวมในยอดลากิจประจำปี',                offTitle:'🚫 ไม่หักวันลา', offHint:'บันทึกไว้เป็นประวัติ แต่ไม่นับเป็นวันลากิจ' },
+  'half-am':{ defaultOn:true,  onTitle:'✅ หักวันลา 0.5 วัน', onHint:'นับเป็นวันลาครึ่งวันในยอดสรุป',                offTitle:'🚫 ไม่หักวันลา', offHint:'บันทึกไว้เป็นประวัติ แต่ไม่นับวันลา' },
+  'half-pm':{ defaultOn:true,  onTitle:'✅ หักวันลา 0.5 วัน', onHint:'นับเป็นวันลาครึ่งวันในยอดสรุป',                offTitle:'🚫 ไม่หักวันลา', offHint:'บันทึกไว้เป็นประวัติ แต่ไม่นับวันลา' },
+  late:     { defaultOn:false, onTitle:'✅ หักวันลา 0.5 วัน', onHint:'นับการมาสายครั้งนี้เป็นการหักวันลา',           offTitle:'🚫 ไม่หักวันลา (ค่าเริ่มต้น)', offHint:'เก็บไว้เป็นประวัติว่ามาสายวันไหน โดยไม่หักวันลา' },
 };
 
 let SCRIPT_URL = '';
@@ -536,6 +616,23 @@ function showSection(name, btn) {
   if (name === 'holidays') renderHolidayList();
 }
 
+// แสดงผลคอลัมน์ "จำนวน" ให้สอดคล้องกับสถานะหัก/ไม่หักวันลา
+// (days = 0 สำหรับประเภทที่เลือกได้ ใช้แทนสถานะ "ไม่หักวันลา" โดยตรง — ไม่ต้องเพิ่มคอลัมน์ใหม่ใน Sheet)
+function formatDayCell(r) {
+  const d = parseFloat(r.days) || 0;
+  if (r.type === 'work-holiday') return `<span class="cell-strong">+1 สิทธิ์</span>`;
+  if (r.type === 'swap')         return `<span class="cell-strong">ใช้ 1 สิทธิ์</span>`;
+  if (DEDUCT_TYPES.includes(r.type) && d === 0) {
+    return `<span class="badge badge-no-deduct">🚫 ไม่หักวันลา</span>`;
+  }
+  return `<span class="cell-strong">${d} วัน</span>`;
+}
+function isRecordDeducted(r) {
+  if (r.type === 'work-holiday' || r.type === 'swap') return true; // ไม่เกี่ยวกับวันลา ไม่ถูกฟิลเตอร์
+  if (!DEDUCT_TYPES.includes(r.type)) return true; // ลาป่วย ฯลฯ หักเสมอ
+  return (parseFloat(r.days) || 0) > 0;
+}
+
 // ============================================================
 //  DASHBOARD
 // ============================================================
@@ -546,8 +643,8 @@ function renderDashboard() {
   EMPLOYEES.forEach(emp => {
     const recs = allRecords.filter(r => String(r.empId) === String(emp.id) && getYearTH(r.date) === String(curYear));
     const sick     = recs.filter(r=>r.type==='sick').reduce((s,r)=>s+parseFloat(r.days||1),0);
-    const leaveD   = recs.filter(r=>r.type==='leave').reduce((s,r)=>s+parseFloat(r.days||1),0);
-    const halfD    = recs.filter(r=>r.type==='half-am'||r.type==='half-pm').reduce((s,r)=>s+parseFloat(r.days||0.5),0);
+    const leaveD   = recs.filter(r=>r.type==='leave').reduce((s,r)=>s+parseFloat(r.days||0),0);
+    const halfD    = recs.filter(r=>r.type==='half-am'||r.type==='half-pm').reduce((s,r)=>s+parseFloat(r.days||0),0);
     const workHol  = recs.filter(r=>r.type==='work-holiday').length;
     const swap     = recs.filter(r=>r.type==='swap').length;
     const balance  = workHol - swap;
@@ -556,8 +653,8 @@ function renderDashboard() {
       <div class="emp-name" style="color:${emp.color}">${emp.name} <span style="font-size:13px;color:#8a9bb0">(${emp.nick})</span></div>
       <div class="emp-stats">
         <div class="stat-box"><div class="stat-num" style="color:#dc2626">${sick}</div><div class="stat-label">ลาป่วย (วัน)</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:#1d4ed8">${leaveD+halfD}</div><div class="stat-label">ลากิจ (วัน)</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:#c2410c">${workHol}</div><div class="stat-label">ทำงานวันหยุด</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#1A3A5C">${leaveD+halfD}</div><div class="stat-label">ลากิจ (วัน, หักแล้ว)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#EA580C">${workHol}</div><div class="stat-label">ทำงานวันหยุด</div></div>
         <div class="stat-box"><div class="stat-num" style="color:${balance>=0?'#15803d':'#dc2626'}">${balance}</div><div class="stat-label">สิทธิ์คงเหลือ</div></div>
       </div>
       <div style="margin-top:10px;font-size:11px;color:#8a9bb0;text-align:center">ปี ${curYear} · คลิกดูรายละเอียด</div>
@@ -576,11 +673,11 @@ function filterByEmp(empId) {
 // ============================================================
 const REASON_CONFIG = {
   sick:          { icon:'🤒', title:'อาการป่วย / เหตุผล',              hint:'เช่น ไข้ ปวดหัว หรือต้องพบแพทย์',                    color:'#dc2626', required: true },
-  leave:         { icon:'📋', title:'เหตุผลการลากิจ',                  hint:'เช่น ธุระส่วนตัว ดูแลครอบครัว ติดต่อราชการ',          color:'#1d4ed8', required: true },
+  leave:         { icon:'📋', title:'เหตุผลการลากิจ',                  hint:'เช่น ธุระส่วนตัว ดูแลครอบครัว ติดต่อราชการ',          color:'#1A3A5C', required: true },
   'half-am':     { icon:'🌅', title:'เหตุผลการลาครึ่งวันเช้า',         hint:'เช่น พบแพทย์ตอนเช้า ธุระด่วน',                        color:'#b45309', required: true },
   'half-pm':     { icon:'🌇', title:'เหตุผลการลาครึ่งวันบ่าย',         hint:'เช่น รับลูกที่โรงเรียน นัดหมอ',                       color:'#b45309', required: true },
   late:          { icon:'⏰', title:'เหตุผลการเข้างานสาย',              hint:'เช่น รถติด รถเสีย ธุระด่วน',                          color:'#7c3aed', required: true },
-  'work-holiday':{ icon:'💪', title:'งานที่ทำในวันหยุด / รายละเอียด', hint:'เช่น ส่งงานลูกค้า ซ่อมระบบฉุกเฉิน จัดอีเวนต์',       color:'#c2410c', required: true },
+  'work-holiday':{ icon:'💪', title:'งานที่ทำในวันหยุด / รายละเอียด', hint:'เช่น ส่งงานลูกค้า ซ่อมระบบฉุกเฉิน จัดอีเวนต์',       color:'#EA580C', required: true },
   swap:          { icon:'🔄', title:'เหตุผลการใช้สิทธิ์แลกวันหยุด',   hint:'เช่น ลาพักผ่อน นัดหมายส่วนตัว',                      color:'#15803d', required: true },
 };
 
@@ -588,6 +685,15 @@ function onTypeChange() {
   const t = document.getElementById('f-type').value;
   document.getElementById('f-enddate-group').style.display = (t==='sick'||t==='leave') ? 'block' : 'none';
   document.getElementById('f-ref-group').style.display = (t==='swap') ? 'block' : 'none';
+
+  // เปิด/ปิด ตัวเลือก "หักวันลา / ไม่หักวันลา"
+  if (DEDUCT_TYPES.includes(t)) {
+    document.getElementById('f-deduct-group').style.display = 'block';
+    document.getElementById('f-deduct').checked = DEDUCT_CONFIG[t].defaultOn;
+    updateDeductUI();
+  } else {
+    document.getElementById('f-deduct-group').style.display = 'none';
+  }
 
   const cfg = REASON_CONFIG[t];
   const textarea = document.getElementById('f-note');
@@ -611,13 +717,26 @@ function onTypeChange() {
     icon.textContent  = '📝';
     title.textContent = 'เหตุผล / รายละเอียด';
     hint.textContent  = '';
-    textarea.style.borderLeftColor = 'var(--primary)';
+    textarea.style.borderLeftColor = 'var(--navy-light)';
     textarea.style.borderColor = '';
     textarea.placeholder = 'ระบุเหตุผลหรือรายละเอียดเพิ่มเติม...';
     req.style.display = 'none';
     document.getElementById('f-reason-error').style.display = 'none';
   }
 }
+
+function updateDeductUI() {
+  const t = document.getElementById('f-type').value;
+  const cfg = DEDUCT_CONFIG[t];
+  if (!cfg) return;
+  const checked = document.getElementById('f-deduct').checked;
+  document.getElementById('f-deduct-title').textContent = checked ? cfg.onTitle : cfg.offTitle;
+  document.getElementById('f-deduct-hint').textContent  = checked ? cfg.onHint  : cfg.offHint;
+  const card = document.getElementById('deduct-card');
+  card.classList.toggle('is-on', checked);
+  card.classList.toggle('is-off', !checked);
+}
+
 function clearReasonError() {
   const textarea = document.getElementById('f-note');
   const errEl    = document.getElementById('f-reason-error');
@@ -625,7 +744,7 @@ function clearReasonError() {
   const cfg      = REASON_CONFIG[type];
   errEl.style.display = 'none';
   textarea.style.border = '';
-  textarea.style.borderLeft = '3px solid ' + (cfg ? cfg.color : 'var(--primary)');
+  textarea.style.borderLeft = '3px solid ' + (cfg ? cfg.color : 'var(--navy-light)');
 }
 
 function clearForm() {
@@ -635,7 +754,7 @@ function clearForm() {
   document.getElementById('f-reason-error').style.display = 'none';
   const textarea = document.getElementById('f-note');
   textarea.style.border = '';
-  textarea.style.borderLeft = '3px solid var(--primary)';
+  textarea.style.borderLeft = '3px solid var(--navy-light)';
   onTypeChange();
 }
 
@@ -663,7 +782,6 @@ async function saveRecord() {
   if (!note) {
     const textarea = document.getElementById('f-note');
     const errEl    = document.getElementById('f-reason-error');
-    const cfg = REASON_CONFIG[type];
     // highlight border red
     textarea.style.border = '2px solid #dc2626';
     textarea.style.borderLeft = '3px solid #dc2626';
@@ -679,9 +797,15 @@ async function saveRecord() {
     return;
   }
 
-  const dayMap = { sick:1, leave:1, 'half-am':0.5, 'half-pm':0.5, late:0, 'work-holiday':0, swap:0 };
+  const dayMap = { sick:1, leave:1, 'half-am':0.5, 'half-pm':0.5, late:0.5, 'work-holiday':0, swap:0 };
   let days = dayMap[type];
   if ((type==='sick'||type==='leave') && enddate && enddate>date) days = countWorkDays(date, enddate);
+
+  // ถ้าเป็นประเภทที่เลือกได้ และผู้ใช้ปิดสวิตช์ "หักวันลา" -> บันทึกจำนวนวัน = 0
+  // (ระบบยังเก็บรายละเอียด วันที่ พนักงาน เหตุผลไว้ครบ เพียงแต่ไม่ถูกนับรวมในยอดวันลา)
+  if (DEDUCT_TYPES.includes(type) && !document.getElementById('f-deduct').checked) {
+    days = 0;
+  }
 
   showLoading('กำลังบันทึก...');
   try {
@@ -690,7 +814,8 @@ async function saveRecord() {
     await loadAllRecords();
     hideLoading();
     const emp = getEmployee(empId);
-    showAlert(`✅ บันทึกสำเร็จ: ${emp.name} (${emp.nick}) — ${TYPE_LABELS[type]}`);
+    const deductNote = (DEDUCT_TYPES.includes(type) && days===0) ? ' (ไม่หักวันลา)' : '';
+    showAlert(`✅ บันทึกสำเร็จ: ${emp.name} (${emp.nick}) — ${TYPE_LABELS[type]}${deductNote}`);
     clearForm();
     renderDashboard();
   } catch(e) {
@@ -705,12 +830,15 @@ async function saveRecord() {
 function renderHistory() {
   const empF  = document.getElementById('h-emp-filter').value;
   const typeF = document.getElementById('h-type-filter').value;
+  const deductF = document.getElementById('h-deduct-filter').value;
   const yearF = document.getElementById('h-year-filter').value;
   const search= document.getElementById('h-search').value.toLowerCase();
 
   let recs = [...allRecords];
   if (empF)  recs = recs.filter(r => String(r.empId) === String(empF));
   if (typeF) recs = recs.filter(r => r.type===typeF);
+  if (deductF === 'deducted')     recs = recs.filter(r => isRecordDeducted(r));
+  if (deductF === 'not-deducted') recs = recs.filter(r => !isRecordDeducted(r));
   if (yearF) recs = recs.filter(r => getYearTH(r.date) === String(yearF));
   if (search) recs = recs.filter(r => {
     const e = getEmployee(r.empId);
@@ -726,14 +854,12 @@ function renderHistory() {
     <tbody>${recs.map((r,i)=>{
       const emp = getEmployee(r.empId);
       const dateStr = r.enddate && r.enddate > r.date ? `${formatDateTH(r.date)} – ${formatDateTH(r.enddate)}` : formatDateTH(r.date);
-      const _days = parseFloat(r.days) || 0;
-      const dayStr = r.type==='late'?'(สาย)':r.type==='work-holiday'?'+1 สิทธิ์':r.type==='swap'?'ใช้ 1 สิทธิ์':`${_days} วัน`;
       return `<tr>
         <td style="color:#8a9bb0;font-size:12px">${i+1}</td>
         <td><strong style="color:${emp?.color||'#333'}">${emp?.name||'?'}</strong><br><small style="color:#8a9bb0">(${emp?.nick||''})</small></td>
         <td><span class="badge ${TYPE_BADGE[r.type]||''}">${TYPE_LABELS[r.type]||r.type}</span></td>
         <td>${dateStr}</td>
-        <td style="font-weight:600">${dayStr}</td>
+        <td>${formatDayCell(r)}</td>
         <td style="font-size:13px;color:#555">${r.note||'—'}</td>
         <td class="no-print"><button class="btn btn-danger btn-sm" onclick="confirmDelete(${r.id})">ลบ</button></td>
       </tr>`;
@@ -775,10 +901,11 @@ function renderSummary() {
   content.innerHTML = EMPLOYEES.map(emp => {
     const er = recs.filter(r => String(r.empId) === String(emp.id));
     const sick    = er.filter(r=>r.type==='sick').reduce((s,r)=>s+parseFloat(r.days||1),0);
-    const leaveF  = er.filter(r=>r.type==='leave').reduce((s,r)=>s+parseFloat(r.days||1),0);
-    const halfAM  = er.filter(r=>r.type==='half-am').length;
-    const halfPM  = er.filter(r=>r.type==='half-pm').length;
-    const late    = er.filter(r=>r.type==='late').length;
+    const leaveF  = er.filter(r=>r.type==='leave').reduce((s,r)=>s+parseFloat(r.days||0),0);
+    const halfAMd = er.filter(r=>r.type==='half-am').reduce((s,r)=>s+parseFloat(r.days||0),0);
+    const halfPMd = er.filter(r=>r.type==='half-pm').reduce((s,r)=>s+parseFloat(r.days||0),0);
+    const lateCount = er.filter(r=>r.type==='late').length;
+    const lateDeducted = er.filter(r=>r.type==='late').reduce((s,r)=>s+parseFloat(r.days||0),0);
     const workHol = er.filter(r=>r.type==='work-holiday').length;
     const swap    = er.filter(r=>r.type==='swap').length;
     const bal     = workHol - swap;
@@ -787,21 +914,20 @@ function renderSummary() {
         <div><div style="font-family:'Mitr',sans-serif;font-size:18px;font-weight:600;color:${emp.color}">${emp.name} <span style="font-size:13px;color:#8a9bb0">(${emp.nick})</span></div><div style="font-size:12px;color:#8a9bb0">สรุปปี ${year}</div></div>
         <button class="btn btn-outline btn-sm no-print" onclick="printEmployee(${emp.id},${year})">🖨️ พิมพ์ PDF</button>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:14px">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:14px">
         <div class="stat-box"><div class="stat-num" style="color:#dc2626">${sick}</div><div class="stat-label">ลาป่วย (วัน)</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:#1d4ed8">${leaveF}</div><div class="stat-label">ลากิจ (วัน)</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:#b45309">${(halfAM+halfPM)*0.5}</div><div class="stat-label">ลาครึ่งวัน (วัน)</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:#7c3aed">${late}</div><div class="stat-label">เข้าสาย (ครั้ง)</div></div>
-        <div class="stat-box"><div class="stat-num" style="color:#c2410c">${workHol}</div><div class="stat-label">ทำงานวันหยุด</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#1A3A5C">${leaveF}</div><div class="stat-label">ลากิจ (วัน, หักแล้ว)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#b45309">${halfAMd+halfPMd}</div><div class="stat-label">ลาครึ่งวัน (วัน, หักแล้ว)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#7c3aed">${lateCount}</div><div class="stat-label">เข้าสาย (ครั้ง)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#7c3aed">${lateDeducted}</div><div class="stat-label">มาสาย-หักวันลา (วัน)</div></div>
+        <div class="stat-box"><div class="stat-num" style="color:#EA580C">${workHol}</div><div class="stat-label">ทำงานวันหยุด</div></div>
         <div class="stat-box"><div class="stat-num" style="color:${bal>=0?'#15803d':'#dc2626'}">${bal}</div><div class="stat-label">สิทธิ์คงเหลือ</div></div>
       </div>
       ${er.length ? `<div style="margin-top:14px"><div style="font-size:13px;font-weight:600;color:#555;margin-bottom:8px">รายการทั้งหมด (${er.length})</div>
       <div class="table-wrap"><table><thead><tr><th>วันที่</th><th>ประเภท</th><th>จำนวน</th><th>เหตุผล / รายละเอียด</th></tr></thead><tbody>
       ${[...er].sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(r=>{
         const ds = r.enddate && r.enddate>r.date?`${formatDateTH(r.date)} – ${formatDateTH(r.enddate)}`:formatDateTH(r.date);
-        const _d = parseFloat(r.days) || 0;
-        const dv = r.type==='late'?'(สาย)':r.type==='work-holiday'?'+1 สิทธิ์':r.type==='swap'?'ใช้ 1 สิทธิ์':`${_d}วัน`;
-        return `<tr><td>${ds}</td><td><span class="badge ${TYPE_BADGE[r.type]||''}">${TYPE_LABELS[r.type]||r.type}</span></td><td>${dv}</td><td>${r.note||'—'}</td></tr>`;
+        return `<tr><td>${ds}</td><td><span class="badge ${TYPE_BADGE[r.type]||''}">${TYPE_LABELS[r.type]||r.type}</span></td><td>${formatDayCell(r)}</td><td>${r.note||'—'}</td></tr>`;
       }).join('')}
       </tbody></table></div></div>`:'<div class="empty-state" style="padding:16px;color:#8a9bb0">ไม่มีรายการในปีนี้</div>'}
     </div>`;
@@ -815,28 +941,29 @@ function printEmployee(empId, year) {
   const emp = getEmployee(empId);
   const recs = allRecords.filter(r => String(r.empId) === String(empId) && getYearTH(r.date) === String(year));
   const sick    = recs.filter(r=>r.type==='sick').reduce((s,r)=>s+parseFloat(r.days||1),0);
-  const leaveF  = recs.filter(r=>r.type==='leave').reduce((s,r)=>s+parseFloat(r.days||1),0);
-  const halfD   = recs.filter(r=>r.type==='half-am'||r.type==='half-pm').reduce((s,r)=>s+parseFloat(r.days||0.5),0);
+  const leaveF  = recs.filter(r=>r.type==='leave').reduce((s,r)=>s+parseFloat(r.days||0),0);
+  const halfD   = recs.filter(r=>r.type==='half-am'||r.type==='half-pm').reduce((s,r)=>s+parseFloat(r.days||0),0);
   const late    = recs.filter(r=>r.type==='late').length;
   const workHol = recs.filter(r=>r.type==='work-holiday').length;
   const swap    = recs.filter(r=>r.type==='swap').length;
 
   const win = window.open('','_blank');
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Mitr:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700&family=Mitr:wght@500;600&family=Inter:wght@700;800&display=swap" rel="stylesheet">
   <title>${emp.name} ปี ${year}</title>
   <style>
-    body{font-family:'Sarabun',sans-serif;padding:30px;color:#1a2332;font-size:14px}
+    body{font-family:'Sarabun',sans-serif;padding:30px;color:#0D2137;font-size:14px}
     h1{font-family:'Mitr',sans-serif;color:${emp.color};font-size:24px;margin-bottom:4px}
     .sub{color:#666;font-size:12px;margin-bottom:20px}
     .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:24px}
     .stat{background:#f5f8ff;border-radius:8px;padding:12px;text-align:center}
-    .stat-n{font-size:26px;font-weight:700;color:${emp.color}}
+    .stat-n{font-size:26px;font-weight:700;font-family:'Inter',sans-serif;color:${emp.color}}
     .stat-l{font-size:11px;color:#666;margin-top:2px}
     table{width:100%;border-collapse:collapse;font-size:13px}
     th{background:${emp.color};color:white;padding:9px 11px;text-align:left}
     td{padding:8px 11px;border-bottom:1px solid #e2e8f0}
     tr:nth-child(even){background:#f8fafc}
+    .badge-no-deduct{background:#F1F5F9;color:#64748B;padding:2px 8px;border-radius:10px;font-size:11px;border:1px dashed #CBD5E1}
     .footer{margin-top:30px;border-top:1px solid #ddd;padding-top:12px;font-size:11px;color:#999;text-align:right}
     @media print{body{padding:15px}}
   </style></head><body>
@@ -844,22 +971,20 @@ function printEmployee(empId, year) {
   <div class="sub">รายงานสรุปการลาประจำปี ${year} &nbsp;·&nbsp; พิมพ์: ${formatDateTH(new Date())}</div>
   <div class="stats">
     <div class="stat"><div class="stat-n" style="color:#dc2626">${sick}</div><div class="stat-l">ลาป่วย (วัน)</div></div>
-    <div class="stat"><div class="stat-n" style="color:#1d4ed8">${leaveF}</div><div class="stat-l">ลากิจ (วัน)</div></div>
-    <div class="stat"><div class="stat-n" style="color:#b45309">${halfD}</div><div class="stat-l">ลาครึ่งวัน (วัน)</div></div>
+    <div class="stat"><div class="stat-n" style="color:#1A3A5C">${leaveF}</div><div class="stat-l">ลากิจ (วัน หักแล้ว)</div></div>
+    <div class="stat"><div class="stat-n" style="color:#b45309">${halfD}</div><div class="stat-l">ลาครึ่งวัน (วัน หักแล้ว)</div></div>
     <div class="stat"><div class="stat-n" style="color:#7c3aed">${late}</div><div class="stat-l">เข้าสาย (ครั้ง)</div></div>
-    <div class="stat"><div class="stat-n" style="color:#c2410c">${workHol}</div><div class="stat-l">ทำงานวันหยุด</div></div>
+    <div class="stat"><div class="stat-n" style="color:#EA580C">${workHol}</div><div class="stat-l">ทำงานวันหยุด</div></div>
     <div class="stat"><div class="stat-n" style="color:${(workHol-swap)>=0?'#15803d':'#dc2626'}">${workHol-swap}</div><div class="stat-l">สิทธิ์คงเหลือ</div></div>
   </div>
   <table><thead><tr><th>วันที่</th><th>ประเภท</th><th>จำนวน</th><th>เหตุผล / รายละเอียด</th></tr></thead><tbody>
   ${recs.length===0?'<tr><td colspan="4" style="text-align:center;color:#999;padding:20px">ไม่มีรายการ</td></tr>':
     [...recs].sort((a,b)=>String(a.date).localeCompare(String(b.date))).map(r=>{
       const ds = r.enddate&&r.enddate>r.date?`${formatDateTH(r.date)} – ${formatDateTH(r.enddate)}`:formatDateTH(r.date);
-      const _pd = parseFloat(r.days) || 0;
-      const dv = r.type==='late'?'(สาย)':r.type==='work-holiday'?'+1 สิทธิ์':r.type==='swap'?'ใช้ 1 สิทธิ์':`${_pd}วัน`;
-      return `<tr><td>${ds}</td><td>${TYPE_LABELS[r.type]||r.type}</td><td>${dv}</td><td>${r.note||'—'}</td></tr>`;
+      return `<tr><td>${ds}</td><td>${TYPE_LABELS[r.type]||r.type}</td><td>${formatDayCell(r)}</td><td>${r.note||'—'}</td></tr>`;
     }).join('')}
   </tbody></table>
-  <div class="footer">ระบบบันทึกการลาพนักงาน · ${formatDateTH(new Date())}</div>
+  <div class="footer">ระบบบันทึกการลาพนักงาน ENZONE SERVICE · ${formatDateTH(new Date())}</div>
   <script>window.onload=()=>window.print()<\/script>
   </body></html>`);
   win.document.close();
