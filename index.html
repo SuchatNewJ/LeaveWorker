@@ -80,8 +80,8 @@ body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--t
 .conn-err { background:rgba(220,38,38,0.18); color:#FCA5A5; cursor:pointer; border:1px solid rgba(252,165,165,0.35); }
 
 /* NAV TABS */
-.nav-tabs { background:var(--surface); border-bottom:1px solid var(--border); display:flex; padding:0 24px; gap:4px; overflow-x:auto; }
-.tab-btn { padding:13px 18px; border:none; background:none; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; font-weight:500; color:var(--text2); border-bottom:3px solid transparent; margin-bottom:-1px; white-space:nowrap; transition:all 0.18s; }
+.nav-tabs { background:var(--surface); border-bottom:1px solid var(--border); display:flex; padding:0 24px; gap:4px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
+.tab-btn { padding:13px 18px; border:none; background:none; cursor:pointer; font-family:'Sarabun',sans-serif; font-size:14px; font-weight:500; color:var(--text2); border-bottom:3px solid transparent; margin-bottom:-1px; white-space:nowrap; transition:all 0.18s; flex:none; }
 .tab-btn:hover { color:var(--orange-dark); }
 .tab-btn.active { color:var(--navy-deep); border-bottom-color:var(--orange); font-weight:700; }
 
@@ -96,11 +96,12 @@ body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--t
 .form-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; }
 .form-group { display:flex; flex-direction:column; gap:5px; }
 .form-group label { font-size:13px; font-weight:600; color:var(--text2); }
-.form-group select, .form-group input, .form-group textarea { border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 12px; font-family:'Sarabun',sans-serif; font-size:14px; background:var(--surface); color:var(--text); transition:border-color 0.15s; }
+.form-group select, .form-group input, .form-group textarea { border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:10px 12px; font-family:'Sarabun',sans-serif; font-size:14px; background:var(--surface); color:var(--text); transition:border-color 0.15s; width:100%; }
 .form-group select:focus, .form-group input:focus, .form-group textarea:focus { outline:none; border-color:var(--orange); }
 .form-group textarea { resize:vertical; min-height:60px; }
 .form-full { grid-column:1 / -1; }
 .btn-row { display:flex; gap:10px; margin-top:18px; flex-wrap:wrap; }
+.btn-row .btn { flex:1 1 auto; min-width:140px; }
 
 /* DEDUCT TOGGLE */
 .deduct-card { display:flex; align-items:center; gap:16px; background:var(--surface2); border:1.5px solid var(--border); border-radius:var(--radius-sm); padding:14px 16px; transition:all .2s; }
@@ -116,14 +117,14 @@ body { font-family: 'Sarabun', sans-serif; background: var(--bg); color: var(--t
 .deduct-text-hint { font-size:12px; color:var(--text2); margin-top:2px; line-height:1.5; }
 
 /* TABLE */
-.table-wrap { overflow-x:auto; }
+.table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 table { width:100%; border-collapse:collapse; font-size:13px; }
 thead th { background:var(--navy-deep); color:white; padding:11px 12px; text-align:left; font-weight:600; white-space:nowrap; }
 tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
 tbody tr:hover { background:var(--orange-tint); }
 tbody td { padding:10px 12px; vertical-align:top; }
 .cell-strong { font-weight:700; color:var(--navy-deep); }
-.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:.01em; }
+.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:.01em; white-space:nowrap; }
 .badge-sick { background:var(--error-bg); color:var(--error); }
 .badge-leave { background:#E0EAF5; color:var(--navy-light); }
 .badge-half { background:var(--warning-bg); color:var(--warning); }
@@ -170,7 +171,7 @@ tbody td { padding:10px 12px; vertical-align:top; }
 /* MODAL */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(13,33,55,0.55); z-index:1000; align-items:center; justify-content:center; }
 .modal-overlay.open { display:flex; }
-.modal { background:white; border-radius:16px; padding:26px; max-width:480px; width:90%; box-shadow:var(--shadow-lg); }
+.modal { background:white; border-radius:16px; padding:26px; max-width:480px; width:90%; box-shadow:var(--shadow-lg); max-height:85vh; overflow-y:auto; }
 .modal-title { font-family:'Mitr',sans-serif; font-size:18px; color:var(--navy-deep); margin-bottom:12px; }
 .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
 
@@ -190,10 +191,74 @@ tbody td { padding:10px 12px; vertical-align:top; }
   body { background:white; }
   .card { box-shadow:none; border:1px solid #ddd; }
 }
+
+/* ============================================================
+   MOBILE RESPONSIVE — ปรับสำหรับหน้าจอมือถือ
+   ============================================================ */
+@media (max-width:768px) {
+  .container { padding:16px 12px; }
+  .card { padding:16px; border-radius:12px; }
+  .emp-grid { grid-template-columns:1fr; gap:12px; }
+  .form-grid { grid-template-columns:1fr; }
+  .setup-card { padding:24px 20px; }
+}
+
 @media (max-width:600px) {
-  .header { padding:0 14px; }
-  .header-title { font-size:16px; }
-  .nav-tabs { padding:0 8px; }
+  body { font-size:14px; }
+
+  /* HEADER: ย่อ badge วันที่ ซ่อนวันที่บนจอแคบ ปรับ layout เป็นแนวตั้งได้ */
+  .header { padding:0 12px; height:auto; min-height:60px; flex-wrap:wrap; gap:6px 0; }
+  .header-title { font-size:15px; gap:6px; }
+  .header-sub { font-size:10px; }
+  #current-date { display:none; }
+  .conn-badge { font-size:10px; padding:3px 9px; }
+  .header > div:last-child { gap:8px !important; }
+
+  /* NAV TABS: ย่อ padding ให้กดง่ายด้วยนิ้วแต่ไม่กินที่มาก */
+  .nav-tabs { padding:0 6px; gap:0; }
+  .tab-btn { padding:12px 12px; font-size:13px; }
+
+  /* CARD */
+  .card { padding:14px; margin-bottom:14px; }
+  .card-title { font-size:15px; }
+
+  /* EMP DASHBOARD CARDS: การ์ดพนักงานเรียงแถวเดียว เต็มความกว้าง */
+  .emp-grid { grid-template-columns:1fr; gap:10px; }
+  .emp-card { padding:16px; }
+  .emp-stats { gap:6px; }
+  .stat-num { font-size:20px; }
+
+  /* FORM: ฟิลด์เรียงแถวเดียว เต็มความกว้าง กดง่ายด้วยนิ้ว */
+  .form-grid { grid-template-columns:1fr; gap:12px; }
+  .form-group select, .form-group input, .form-group textarea { font-size:16px; padding:11px 12px; } /* 16px กัน iOS auto-zoom */
+  .btn-row { flex-direction:column; }
+  .btn-row .btn { width:100%; }
+
+  /* FILTER BAR: เรียงเต็มความกว้างทีละแถว */
+  .filter-bar { flex-direction:column; align-items:stretch; }
+  .filter-bar select, .filter-bar input { width:100%; font-size:14px; }
+
+  /* SUMMARY STAT GRID: ลดจำนวนคอลัมน์ไม่ให้บีบเกินไป */
+  #summary-content .card > div[style*="grid-template-columns:repeat(auto-fill"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  #summary-content .card > div[style*="display:flex;justify-content:space-between"] {
+    flex-direction: column; align-items: flex-start !important;
+  }
+  #summary-content .card > div[style*="display:flex;justify-content:space-between"] button {
+    width: 100%;
+  }
+
+  /* TABLE: ตัวอักษรเล็กลง ลด padding ยังเลื่อนซ้าย-ขวาได้ */
+  table { font-size:12px; }
+  thead th, tbody td { padding:8px 8px; }
+
+  /* MODAL */
+  .modal { padding:18px; width:92%; }
+
+  /* SETUP SCREEN */
+  .setup-card { padding:20px 16px; }
+  .setup-title { font-size:19px; }
 }
 </style>
 </head>
